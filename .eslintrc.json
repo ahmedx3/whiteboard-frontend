@@ -10,6 +10,8 @@
   },
   "plugins": ["vue"],
   "rules": {
-    "import/no-unresolved": "off"
+    "import/no-unresolved": "off",
+    "import/extensions": "off",
+    "no-param-reassign": "off"
   }
 }
