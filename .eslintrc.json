@@ -13,6 +13,7 @@
     "import/no-unresolved": "off",
     "import/extensions": "off",
     "no-param-reassign": "off",
-    "operator-linebreak": "off"
+    "operator-linebreak": "off",
+    "no-underscore-dangle": "off"
   }
 }
