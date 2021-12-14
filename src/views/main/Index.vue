@@ -21,7 +21,7 @@
         </div>
       </v-snackbar>
     </v-main>
-    // <DashboardCoreFooter class="grey lighten-4" />
+    <DashboardCoreFooter class="grey lighten-4" />
   </v-app>
 </template>
 
