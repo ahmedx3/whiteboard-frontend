@@ -11,6 +11,15 @@
           <li class="text-center text-h3 white--text">
             {{ $store.state.currentUser.firstName }}
           </li>
+          <v-list-item
+            class="mt-2"
+            to="myprofile"
+            v-if="$store.state.currentUser && $store.state.currentUser.type === 'learner'"
+          >
+            <v-list-item-title class="text-subtitle-1 font-weight-light white--text text-center">
+              <v-icon color="white" class="mr-5">mdi-account-details</v-icon> My Profile
+            </v-list-item-title>
+          </v-list-item>
           <v-list-item @click="logOut" class="mt-2">
             <v-list-item-title class="text-subtitle-1 font-weight-light white--text text-center">
               <v-icon color="white" class="mr-5">mdi-login-variant</v-icon> Log out
@@ -107,6 +116,14 @@
               </template>
 
               <v-list dense color="topbar">
+                <v-list-item
+                  to="myprofile"
+                  v-if="$store.state.currentUser && $store.state.currentUser.type === 'learner'"
+                >
+                  <v-list-item-title class="text-subtitle-1 font-weight-light white--text">
+                    My Profile
+                  </v-list-item-title>
+                </v-list-item>
                 <v-list-item @click="logOut">
                   <v-list-item-title class="text-subtitle-1 font-weight-light white--text">
                     Log out
