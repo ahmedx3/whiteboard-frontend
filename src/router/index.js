@@ -28,6 +28,11 @@ const routes = [
         name: 'feed',
         component: () => import('@/views/Learner/Feed'),
       },
+      {
+        path: '/myprofile',
+        name: 'myprofile',
+        component: () => import('@/views/Learner/MyProfile'),
+      },
     ],
   },
 ];
