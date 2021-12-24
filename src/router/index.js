@@ -28,6 +28,11 @@ const routes = [
         name: 'feed',
         component: () => import('@/views/Learner/Feed'),
       },
+      {
+        path: '/course/:courseId',
+        name: 'course',
+        component: () => import('@/views/main/Course'),
+      },
     ],
   },
 ];
