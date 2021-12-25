@@ -64,8 +64,9 @@
 
       <!-- Content Tabs -->
       <v-tabs centered dark background-color="#3f3d56" v-model="currentTab" fixed-tabs>
-        <v-tab key="0"> Content</v-tab>
-        <v-tab key="1"> Threads</v-tab>
+        <v-tab key="0">Content</v-tab>
+        <v-tab key="1">Threads</v-tab>
+        <v-tab key="2" v-if="ownsCourse">Add Activity</v-tab>
       </v-tabs>
 
       <!-- Content -->
@@ -78,6 +79,10 @@
         <template v-else-if="currentTab == 1">
           <div class="text-h1 text-center">Threads</div>
         </template>
+        <template v-else-if="currentTab == 2">
+          <div class="text-h1 text-center">Create Activity</div>
+          <CreateActivity />
+        </template>
       </v-container>
     </template>
 
@@ -89,18 +94,20 @@
 <script>
 import Loading from '@/components/Loading.vue';
 import CourseContent from '@/components/course/courseContent.vue';
+import CreateActivity from '@/components/course/createActivity.vue';
 import img1 from '@/assets/course_1.svg';
 import img2 from '@/assets/course_2.svg';
 import img3 from '@/assets/course_3.svg';
 
 export default {
-  components: { Loading, CourseContent },
+  components: { Loading, CourseContent, CreateActivity },
   data() {
     return {
       loading: true,
       course: null,
       image: null,
       currentTab: null,
+      ownsCourse: true,
     };
   },
   computed: {},
