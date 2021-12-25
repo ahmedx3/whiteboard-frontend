@@ -13,7 +13,7 @@
           </li>
           <v-list-item
             class="mt-2"
-            to="myprofile"
+            :to="'/myprofile'"
             v-if="$store.state.currentUser && $store.state.currentUser.type === 'learner'"
           >
             <v-list-item-title class="text-subtitle-1 font-weight-light white--text text-center">
@@ -117,7 +117,7 @@
 
               <v-list dense color="topbar">
                 <v-list-item
-                  to="myprofile"
+                  :to="'/myprofile'"
                   v-if="$store.state.currentUser && $store.state.currentUser.type === 'learner'"
                 >
                   <v-list-item-title class="text-subtitle-1 font-weight-light white--text">

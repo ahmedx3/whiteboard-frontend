@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card max-width="992" class="center my-6 pa-10" elevation="2" :to="'/courses/' + _id">
+    <v-card max-width="992" class="center my-6 pa-10" elevation="2" :to="'/course/' + _id">
       <v-container>
         <v-row>
           <v-col class="pa-0">
