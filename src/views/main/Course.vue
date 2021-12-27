@@ -129,6 +129,13 @@ export default {
     };
     this.loading = false;
   },
+  beforeRouteEnter(to, from, next) {
+    if (!localStorage.getItem('userData')) {
+      next({ name: 'login' });
+    } else {
+      next();
+    }
+  },
 };
 </script>
 

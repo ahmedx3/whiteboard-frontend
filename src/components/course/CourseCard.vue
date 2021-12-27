@@ -1,10 +1,33 @@
 <template>
   <div>
-    <v-card max-width="992" class="center my-6 pa-10" elevation="2" :to="'/course/' + _id">
+    <v-card max-width="992" class="center my-6 pa-10" elevation="2" :to="'/course/' + course._id">
       <v-container>
         <v-row>
           <v-col class="pa-0">
-            <v-chip color="#f1e9f5" filter pill>Intermediate</v-chip>
+            <v-chip
+              color="#f1e9f5"
+              text-color="#2e3d54"
+              filter
+              pill
+              v-if="course.difficulty == 'Beginner'"
+              >Beginner</v-chip
+            >
+            <v-chip
+              color="#E5F1F5"
+              text-color="#017a9b"
+              filter
+              pill
+              v-if="course.difficulty == 'Intermediate'"
+              >Intermediate</v-chip
+            >
+            <v-chip
+              color="#E7F3ED"
+              text-color="#0f854a"
+              filter
+              pill
+              v-if="course.difficulty == 'Advanced'"
+              >Advanced</v-chip
+            >
           </v-col>
           <v-col class="pa-0">
             <v-rating
@@ -17,7 +40,7 @@
         </v-row>
         <v-row>
           <v-col class="pa-0 mt-3">
-            <h1 class="font-weight-medium">Advanced Programming in C++</h1>
+            <h1 class="font-weight-medium">{{ course.name }}</h1>
           </v-col>
         </v-row>
         <v-row>
@@ -28,8 +51,7 @@
         <v-row>
           <v-col class="pa-0 my-6">
             <p class="text-body-1">
-              Learn the advanced programming topics in the C++ programming language, including
-              functions, computation complexity, arrays and strings.
+              {{ course.description }}
             </p>
           </v-col>
           <v-col class="display-flex hidden-sm-and-down">
@@ -53,7 +75,14 @@
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+    course: {
+      type: Object,
+      required: true,
+    },
+  },
+};
 </script>
 
 <style>
@@ -65,7 +94,6 @@ export default {};
 .v-chip__content {
   font-size: 1em;
   font-weight: bold;
-  color: #2e3d54;
 }
 
 .v-rating {

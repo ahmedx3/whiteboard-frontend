@@ -302,6 +302,14 @@ export default {
       });
     },
   },
+  beforeRouteEnter(to, from, next) {
+    const userData = JSON.parse(localStorage.getItem('userData'));
+    if (userData == null) {
+      next();
+    } else {
+      next('/feed');
+    }
+  },
   computed: {},
   data: () => ({}),
 };

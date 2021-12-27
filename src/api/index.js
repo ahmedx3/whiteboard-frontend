@@ -12,13 +12,14 @@ axios.interceptors.request.use(
   (err) => Promise.reject(err),
 );
 
-// const config = {
-//   headers: {
-//     Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
-//   },
-// };
+const config = {
+  headers: {
+    Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+  },
+};
 
 export default {
+  // ************************ Authentication ************************ //
   async loginUser(user) {
     const request = {
       method: 'POST',
@@ -48,5 +49,21 @@ export default {
       .catch((err) => err.response);
 
     return response;
+  },
+
+  // ************************ Feed ************************ //
+
+  async fetchAllCourses() {
+    return axios
+      .get(`${baseURL}/api/v1/courses`, config)
+      .then((response) => response.data)
+      .catch(() => false);
+  },
+
+  async createCourse(courseData) {
+    return axios
+      .post(`${baseURL}/api/v1/courses`, courseData, config)
+      .then((response) => response.data)
+      .catch(() => false);
   },
 };
