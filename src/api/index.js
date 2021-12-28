@@ -66,4 +66,51 @@ export default {
       .then((response) => response.data)
       .catch(() => false);
   },
+
+  // ************************ Course Page ************************ //
+
+  async fetchSingleCourse(id) {
+    return axios
+      .get(`${baseURL}/api/v1/courses/${id}`, config)
+      .then((response) => response.data.data)
+      .catch(() => false);
+  },
+
+  async downloadPDF(name) {
+    return axios
+      .get(`${baseURL}/api/v1/courses/pdf/${name}`, config)
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'test.pdf');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      })
+      .catch(() => false);
+  },
+
+  async addPDFtoCourse(id, pdfData) {
+    const bodyFormData = new FormData();
+    bodyFormData.append('pdf', pdfData.pdf);
+    bodyFormData.append('title', pdfData.title);
+
+    return axios
+      .post(`${baseURL}/api/v1/courses/${id}/pdf`, bodyFormData, {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then((response) => response.data)
+      .catch(() => false);
+  },
+
+  async addVideotoCourse(id, videoData) {
+    return axios
+      .post(`${baseURL}/api/v1/courses/${id}/video`, videoData, config)
+      .then((response) => response.data)
+      .catch(() => false);
+  },
 };

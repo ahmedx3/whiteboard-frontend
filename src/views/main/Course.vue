@@ -39,15 +39,20 @@
                   </h2>
                 </v-col>
 
-                <v-col cols="3" class="align-bottom">
+                <v-col cols="auto" class="align-bottom">
                   <div class="text-body font-weight-light mb-3">
                     Created By
                     <span class="text-body white--text font-weight-black mb-3">{{
-                      course.instructor
+                      `${course.instructor.firstName} ${course.instructor.lastName}`
                     }}</span>
                   </div>
                 </v-col>
               </v-row>
+              <div>
+                <v-chip class="px-5" text-color="white" color="deep-purple">
+                  {{ course.difficulty }}
+                </v-chip>
+              </div>
               <div
                 :class="{
                   'text-h4': $vuetify.breakpoint.smAndUp,
@@ -55,7 +60,7 @@
                 }"
                 class="font-weight-light mb-3 mt-6"
               >
-                {{ course.summary }}
+                {{ course.description }}
               </div>
             </v-col>
           </v-row>
@@ -74,14 +79,18 @@
       <v-container class="new-container py-8">
         <template v-if="currentTab == 0">
           <div class="text-h1 text-center">Course Content</div>
-          <CourseContent />
+          <CourseContent :activities="course.activities" v-if="course.activities.length" />
+          <div v-else class="text-overline my-6 text-center">
+            Oops, It appears that there is no content yet.
+          </div>
         </template>
         <template v-else-if="currentTab == 1">
           <div class="text-h1 text-center">Threads</div>
+          <div class="text-overline my-6 text-center">No Threads at the moment</div>
         </template>
         <template v-else-if="currentTab == 2">
           <div class="text-h1 text-center">Create Activity</div>
-          <CreateActivity />
+          <CreateActivity @refetch="getCourse" />
         </template>
       </v-container>
     </template>
@@ -98,6 +107,7 @@ import CreateActivity from '@/components/course/createActivity.vue';
 import img1 from '@/assets/course_1.svg';
 import img2 from '@/assets/course_2.svg';
 import img3 from '@/assets/course_3.svg';
+import api from '@/api';
 
 export default {
   components: { Loading, CourseContent, CreateActivity },
@@ -106,29 +116,40 @@ export default {
       loading: true,
       course: null,
       image: null,
-      currentTab: null,
-      ownsCourse: true,
+      currentTab: 0,
+      ownsCourse: false,
     };
   },
-  computed: {},
   methods: {
-    initializeImage() {
-      this.image = img2;
-      this.image = img3;
-      this.image = img1;
+    initializeImage(courseId) {
+      if (parseInt(courseId, 10) % 3 === 0) {
+        this.image = img1;
+      } else if (parseInt(courseId, 10) % 3 === 1) {
+        this.image = img2;
+      } else {
+        this.image = img3;
+      }
+    },
+    async getCourse() {
+      this.currentTab = 0;
+      this.loading = true;
+      const { courseId } = this.$route.params;
+      this.course = await api.fetchSingleCourse(courseId);
+
+      // If user does not own course
+      const user = JSON.parse(localStorage.getItem('userData'));
+      if (user.id === this.course.instructor.id) {
+        this.ownsCourse = true;
+      }
+      this.loading = false;
     },
   },
   async created() {
-    this.initializeImage();
-    this.course = {
-      name: 'A Very Big Title',
-      summary:
-        'This is a test summary until the real summary for the course is put here, Please read this summary very well before starting the course.',
-      instructor: 'John Doe',
-      date: '1/1/2022',
-    };
-    this.loading = false;
+    const { courseId } = this.$route.params;
+    this.initializeImage(courseId);
+    await this.getCourse();
   },
+
   beforeRouteEnter(to, from, next) {
     if (!localStorage.getItem('userData')) {
       next({ name: 'login' });

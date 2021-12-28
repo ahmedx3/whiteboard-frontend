@@ -4,7 +4,7 @@
       <v-col cols="9">
         <v-timeline align-top dense>
           <v-timeline-item
-            v-for="(item, i) in items"
+            v-for="(item, i) in activities"
             :key="i"
             :color="colors[item.type]"
             :icon="icons[item.type]"
@@ -12,16 +12,22 @@
           >
             <v-card :color="colors[item.type]" dark>
               <v-card-title class="text-h3 center-horizontal py-3 px-4">
-                <span v-if="item.type === 'pdf'"> PDF </span>
-                <span v-else-if="item.type === 'video'"> Video </span>
-                <span v-else-if="item.type === 'quiz'"> Quiz </span>
+                {{ item.title }}
               </v-card-title>
 
               <v-card-text class="white text--primary pa-4 center-horizontal">
-                <template v-if="item.type === 'pdf'">
-                  <v-btn :color="colors[item.type]" class="mx-auto" outlined> Download Pdf </v-btn>
+                <template v-if="item.type === 'PDF'">
+                  <v-btn
+                    :color="colors[item.type]"
+                    class="mx-auto"
+                    outlined
+                    @click="downloadPDF(item)"
+                    download
+                  >
+                    Download Pdf
+                  </v-btn>
                 </template>
-                <template v-if="item.type === 'quiz'">
+                <template v-if="item.type === 'Quiz'">
                   <v-btn
                     :color="colors[item.type]"
                     class="mx-auto"
@@ -31,7 +37,7 @@
                     Open Quiz
                   </v-btn>
                 </template>
-                <template v-if="item.type === 'video'">
+                <template v-if="item.type === 'Video'">
                   <div class="iframe-container">
                     <iframe
                       width="560"
@@ -39,7 +45,7 @@
                       webkitallowfullscreen
                       mozallowfullscreen
                       allowfullscreen
-                      src="https://www.youtube.com/embed/YzeRik5yEBY"
+                      :src="item.link.replace('watch?v=', 'embed/')"
                     ></iframe></div
                 ></template>
               </v-card-text>
@@ -93,30 +99,25 @@
 </template>
 
 <script>
+import api from '@/api';
+
 export default {
+  props: {
+    activities: [],
+  },
   data: () => ({
     currentQuiz: null,
     grade: false,
     currentQuizAnswers: [],
-    items: [
-      {
-        type: 'video',
-      },
-      { type: 'pdf' },
-      {
-        type: 'quiz',
-      },
-      { type: 'video' },
-    ],
     colors: {
-      pdf: 'indigo lighten-2',
-      video: 'blue-grey',
-      quiz: 'teal lighten-3',
+      PDF: 'indigo lighten-2',
+      Video: 'blue-grey',
+      Quiz: 'teal lighten-3',
     },
     icons: {
-      pdf: 'mdi-book-variant',
-      video: 'mdi-video',
-      quiz: 'mdi-pen',
+      PDF: 'mdi-book-variant',
+      Video: 'mdi-video',
+      Quiz: 'mdi-pen',
     },
   }),
   methods: {
@@ -146,11 +147,14 @@ export default {
         if (!this.$refs.quiz.validate()) {
           return;
         }
-        alert(this.currentQuizAnswers);
+        console.log(this.currentQuizAnswers);
       }
       // Reset Quiz data
       this.currentQuiz = null;
       this.currentQuizAnswers = [];
+    },
+    downloadPDF(item) {
+      return api.downloadPDF(item.link);
     },
   },
 };
