@@ -5,13 +5,19 @@
         <v-col cols="4">
           <h1
             class="display-3 font-weight-medium my-3 hidden-sm-and-down"
-            v-if="$store.state.currentUser && $store.state.currentUser.type === 'learner'"
+            v-if="
+              ($store.state.currentUser && $store.state.currentUser.type === 'learner') ||
+              ($store.state.currentUser && $store.state.currentUser.type === 'admin')
+            "
           >
             All courses
           </h1>
           <h1
             class="display-2 font-weight-medium my-5 hidden-md-and-up"
-            v-if="$store.state.currentUser && $store.state.currentUser.type === 'learner'"
+            v-if="
+              ($store.state.currentUser && $store.state.currentUser.type === 'learner') ||
+              ($store.state.currentUser && $store.state.currentUser.type === 'admin')
+            "
           >
             All courses
           </h1>
@@ -124,7 +130,6 @@ export default {
     };
   },
   mounted() {
-    console.log(localStorage.getItem('userToken'));
     // If user is instuctor, get my courses
     if (this.$store.state.currentUser.type === 'instructor') {
       this.fetchMyCourse();

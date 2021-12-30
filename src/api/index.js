@@ -109,6 +109,32 @@ export default {
       .catch(() => false);
   },
 
+  // ************************ Admin ************************ //
+
+  async fetchAllUsers() {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+      },
+    };
+    return axios
+      .get(`${baseURL}/api/v1/users`, config)
+      .then((response) => response.data)
+      .catch(() => false);
+  },
+
+  async updateUserRole(id) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+      },
+    };
+    return axios
+      .patch(`${baseURL}/api/v1/users/${id}`, '', config)
+      .then((response) => response.data)
+      .catch(() => false);
+  },
+
   // ************************ Course Page ************************ //
 
   async fetchSingleCourse(id) {

@@ -38,6 +38,11 @@ const routes = [
         name: 'myprofile',
         component: () => import('@/views/Learner/MyProfile'),
       },
+      {
+        path: '/manage',
+        name: 'manage',
+        component: () => import('@/views/Admin/Manage'),
+      },
     ],
   },
   {

@@ -20,6 +20,15 @@
               <v-icon color="white" class="mr-5">mdi-account-details</v-icon> My Profile
             </v-list-item-title>
           </v-list-item>
+          <v-list-item
+            class="mt-2"
+            :to="'/manage'"
+            v-if="$store.state.currentUser && $store.state.currentUser.type === 'admin'"
+          >
+            <v-list-item-title class="text-subtitle-1 font-weight-light white--text text-center">
+              <v-icon color="white" class="mr-5">mdi-cog</v-icon> Manage Users
+            </v-list-item-title>
+          </v-list-item>
           <v-list-item @click="logOut" class="mt-2">
             <v-list-item-title class="text-subtitle-1 font-weight-light white--text text-center">
               <v-icon color="white" class="mr-5">mdi-login-variant</v-icon> Log out
@@ -122,6 +131,14 @@
                 >
                   <v-list-item-title class="text-subtitle-1 font-weight-light white--text">
                     My Profile
+                  </v-list-item-title>
+                </v-list-item>
+                <v-list-item
+                  :to="'/manage'"
+                  v-if="$store.state.currentUser && $store.state.currentUser.type === 'admin'"
+                >
+                  <v-list-item-title class="text-subtitle-1 font-weight-light white--text">
+                    Manage Users
                   </v-list-item-title>
                 </v-list-item>
                 <v-list-item @click="logOut">
