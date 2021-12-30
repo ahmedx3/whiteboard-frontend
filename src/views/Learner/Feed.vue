@@ -124,6 +124,7 @@ export default {
     };
   },
   mounted() {
+    console.log(localStorage.getItem('userToken'));
     // If user is instuctor, get my courses
     if (this.$store.state.currentUser.type === 'instructor') {
       this.fetchMyCourse();

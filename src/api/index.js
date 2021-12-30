@@ -12,12 +12,6 @@ axios.interceptors.request.use(
   (err) => Promise.reject(err),
 );
 
-const config = {
-  headers: {
-    Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
-  },
-};
-
 export default {
   // ************************ Authentication ************************ //
   async loginUser(user) {
@@ -54,6 +48,11 @@ export default {
   // ************************ Feed ************************ //
 
   async fetchAllCourses() {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+      },
+    };
     return axios
       .get(`${baseURL}/api/v1/courses`, config)
       .then((response) => response.data)
@@ -61,6 +60,11 @@ export default {
   },
 
   async fetchMyCourses() {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+      },
+    };
     return axios
       .get(`${baseURL}/api/v1/courses/me`, config)
       .then((response) => response.data)
@@ -68,6 +72,11 @@ export default {
   },
 
   async createCourse(courseData) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+      },
+    };
     return axios
       .post(`${baseURL}/api/v1/courses`, courseData, config)
       .then((response) => response.data)
@@ -77,6 +86,11 @@ export default {
   // ************************ User Profile ************************ //
 
   async fetchUserProfile() {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+      },
+    };
     return axios
       .get(`${baseURL}/api/v1/users/me`, config)
       .then((response) => response.data)
@@ -84,6 +98,11 @@ export default {
   },
 
   async updateUserProfile(userData) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+      },
+    };
     return axios
       .patch(`${baseURL}/api/v1/users/me`, userData, config)
       .then((response) => response.data)
@@ -93,6 +112,11 @@ export default {
   // ************************ Course Page ************************ //
 
   async fetchSingleCourse(id) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+      },
+    };
     return axios
       .get(`${baseURL}/api/v1/courses/${id}`, config)
       .then((response) => response.data.data)
@@ -100,6 +124,11 @@ export default {
   },
 
   async downloadPDF(name) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+      },
+    };
     return axios
       .get(`${baseURL}/api/v1/courses/pdf/${name}`, config)
       .then((response) => {
@@ -131,6 +160,11 @@ export default {
   },
 
   async addVideotoCourse(id, videoData) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+      },
+    };
     return axios
       .post(`${baseURL}/api/v1/courses/${id}/video`, videoData, config)
       .then((response) => response.data)

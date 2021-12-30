@@ -125,12 +125,7 @@ export default {
         this.$store.state.snackbarColor = 'green darken-2';
         this.$store.state.currentUser = userdata.user;
 
-        // Route to Different Places According to type
-        if (userdata.user.type === 'admin') {
-          this.$router.push('/admin');
-        } else {
-          this.$router.push('/feed');
-        }
+        this.$router.push('/feed');
       } else {
         // Display success and route to home
         this.$store.state.snackbarMessage = 'Wrong Username or Password';
