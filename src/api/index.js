@@ -60,9 +60,32 @@ export default {
       .catch(() => false);
   },
 
+  async fetchMyCourses() {
+    return axios
+      .get(`${baseURL}/api/v1/courses/me`, config)
+      .then((response) => response.data)
+      .catch(() => false);
+  },
+
   async createCourse(courseData) {
     return axios
       .post(`${baseURL}/api/v1/courses`, courseData, config)
+      .then((response) => response.data)
+      .catch(() => false);
+  },
+
+  // ************************ User Profile ************************ //
+
+  async fetchUserProfile() {
+    return axios
+      .get(`${baseURL}/api/v1/users/me`, config)
+      .then((response) => response.data)
+      .catch(() => false);
+  },
+
+  async updateUserProfile(userData) {
+    return axios
+      .patch(`${baseURL}/api/v1/users/me`, userData, config)
       .then((response) => response.data)
       .catch(() => false);
   },

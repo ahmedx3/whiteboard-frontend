@@ -124,11 +124,21 @@ export default {
     };
   },
   mounted() {
-    this.fetchAllCourses();
+    // If user is instuctor, get my courses
+    if (this.$store.state.currentUser.type === 'instructor') {
+      this.fetchMyCourse();
+    } else {
+      this.fetchAllCourses();
+    }
   },
   methods: {
     fetchAllCourses() {
       api.fetchAllCourses().then((res) => {
+        this.courses = res.data;
+      });
+    },
+    fetchMyCourse() {
+      api.fetchMyCourses().then((res) => {
         this.courses = res.data;
       });
     },

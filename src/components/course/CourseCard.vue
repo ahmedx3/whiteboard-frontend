@@ -45,7 +45,8 @@
         </v-row>
         <v-row>
           <v-col class="pa-0">
-            <h1 class="text-caption font-weight-bold">By Ahmed Mostafa</h1>
+            <h1 class="text-caption font-weight-bold">By {{course.instructor.firstName}}
+            {{course.instructor.lastName}}</h1>
           </v-col>
         </v-row>
         <v-row>

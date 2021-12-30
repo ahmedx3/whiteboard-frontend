@@ -20,6 +20,9 @@ export default new Vuex.Store({
     SET_DRAWER(state, payload) {
       state.drawer = payload;
     },
+    UPDATE_CURRENT_USER(state, payload) {
+      state.currentUser = payload;
+    },
   },
   actions: {},
 });
