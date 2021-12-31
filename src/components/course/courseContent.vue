@@ -56,58 +56,69 @@
     </v-row>
 
     <!-- Quiz Dialog -->
-    <v-dialog :value="currentQuiz" persistent max-width="600px">
+    <v-dialog v-if="currentQuiz" :value="currentQuiz" persistent max-width="600px">
       <v-card>
-        <v-card-title>
-          <span class="text-h2">Quiz</span>
-        </v-card-title>
+        <Loading v-if="quizLoading" :size="50" type="small"></Loading>
+        <template v-else>
+          <v-card-title>
+            <span class="text-h2">Quiz: {{ currentQuiz.title }}</span>
+          </v-card-title>
 
-        <v-card-text v-if="grade"> Your grade is 10 </v-card-text>
-        <v-card-text v-else>
-          <v-container>
-            <v-form ref="quiz">
-              <v-row v-for="(entry, i) in currentQuiz" :key="i">
-                <v-col cols="12" class="font-weight-light text-h3">
-                  Question {{ i + 1 }} : {{ entry.question }}
-                </v-col>
-                <v-col cols="12 pt-0 pl-8">
-                  <v-radio-group
-                    v-model="currentQuizAnswers[i]"
-                    column
-                    class="mt-0"
-                    :rules="[(v) => !!v || 'Answer Required']"
-                  >
-                    <v-radio v-for="(answer, j) in entry.answers" :key="j" :value="answer">
-                      <template v-slot:label>
-                        <div class="black--text text-h4">{{ answer }}</div>
-                      </template>
-                    </v-radio>
-                  </v-radio-group>
-                </v-col>
-              </v-row>
-            </v-form>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="green lighten-1" text @click="closeQuizModal(true)"> Save </v-btn>
-          <v-btn color="blue-grey darken-1" text @click="closeQuizModal(false)"> Close </v-btn>
-        </v-card-actions>
+          <v-card-text v-if="grade != null" class="my-6">
+            <div class="text-h4 text-center">Your Grade is</div>
+            <div class="text-h3 text-center">{{ grade }} / {{ currentQuiz.mcqs.length }}</div>
+          </v-card-text>
+          <v-card-text v-else>
+            <v-container>
+              <v-form ref="quiz">
+                <v-row v-for="(entry, i) in currentQuiz.mcqs" :key="i">
+                  <v-col cols="12" class="font-weight-light text-h3">
+                    Question {{ i + 1 }} : {{ entry.question }}
+                  </v-col>
+                  <v-col cols="12 pt-0 pl-8">
+                    <v-radio-group
+                      v-model="currentQuizAnswers[i]"
+                      column
+                      class="mt-0"
+                      :rules="[(v) => !!v || 'Answer Required']"
+                    >
+                      <v-radio v-for="(answer, j) in entry.options" :key="j" :value="answer">
+                        <template v-slot:label>
+                          <div class="black--text text-h4">{{ answer }}</div>
+                        </template>
+                      </v-radio>
+                    </v-radio-group>
+                  </v-col>
+                </v-row>
+              </v-form>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green lighten-1" v-if="grade == null" text @click="closeQuizModal(true)">
+              Save
+            </v-btn>
+            <v-btn color="blue-grey darken-1" text @click="closeQuizModal(false)"> Close </v-btn>
+          </v-card-actions>
+        </template>
       </v-card>
     </v-dialog>
   </v-container>
 </template>
 
 <script>
+import Loading from '@/components/Loading.vue';
 import api from '@/api';
 
 export default {
+  components: { Loading },
   props: {
     activities: [],
   },
   data: () => ({
     currentQuiz: null,
-    grade: false,
+    grade: null,
+    quizLoading: false,
     currentQuizAnswers: [],
     colors: {
       PDF: 'indigo lighten-2',
@@ -122,39 +133,41 @@ export default {
   }),
   methods: {
     chooseQuiz(item) {
-      if (item);
-      this.currentQuiz = [
-        {
-          question: 'This is a Question',
-          answers: ['Answer 1', 'Answer 2', 'Answer 3', 'Answer 4'],
-        },
-        {
-          question: 'This is a Question',
-          answers: ['Answer 1', 'Answer 2', 'Answer 3', 'Answer 4'],
-        },
-        {
-          question: 'This is a Question',
-          answers: ['Answer 1', 'Answer 2', 'Answer 3', 'Answer 4'],
-        },
-        {
-          question: 'This is a Question',
-          answers: ['Answer 1', 'Answer 2', 'Answer 3', 'Answer 4'],
-        },
-      ];
+      this.currentQuiz = item;
     },
-    closeQuizModal(save) {
+    async closeQuizModal(save) {
       if (save) {
         if (!this.$refs.quiz.validate()) {
           return;
         }
-        console.log(this.currentQuizAnswers);
+
+        // Set Loading to true
+        this.quizLoading = true;
+
+        // Send Request
+        const response = await api.submitQuiz(this.currentQuiz._id, {
+          answers: this.currentQuizAnswers,
+        });
+
+        if (response.status === 'success') {
+          this.quizLoading = false;
+          this.grade = response.data.grade;
+        } else {
+          // Alert User that it was failed
+          this.$store.state.snackbarMessage = 'An error occured';
+          this.$store.state.snackbar = true;
+          this.$store.state.snackbarColor = 'error';
+        }
+      } else {
+        // Reset Quiz data
+        this.currentQuiz = null;
+        this.currentQuizAnswers = [];
+        this.quizLoading = false;
+        this.grade = null;
       }
-      // Reset Quiz data
-      this.currentQuiz = null;
-      this.currentQuizAnswers = [];
     },
-    downloadPDF(item) {
-      return api.downloadPDF(item.link);
+    async downloadPDF(item) {
+      await api.downloadPDF(item.link);
     },
   },
 };

@@ -12,8 +12,11 @@
         ></v-skeleton-loader>
       </v-col>
     </v-row>
+    <v-container v-else-if="type === 'small'" class="expand">
+      <v-progress-circular :size="size" color="blue darken-3" indeterminate></v-progress-circular>
+    </v-container>
     <v-container v-else class="cover">
-      <v-progress-circular :size="300" color="blue darken-3" indeterminate></v-progress-circular>
+      <v-progress-circular :size="size" color="blue darken-3" indeterminate></v-progress-circular>
     </v-container>
   </div>
 </template>
@@ -22,6 +25,10 @@
 export default {
   props: {
     type: String,
+    size: {
+      type: Number,
+      default: 300,
+    },
   },
 };
 </script>
@@ -29,6 +36,12 @@ export default {
 <style scoped>
 .cover {
   height: calc(100vh - 80px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.expand {
+  height: 200px;
   display: flex;
   justify-content: center;
   align-items: center;

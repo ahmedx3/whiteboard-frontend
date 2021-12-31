@@ -154,19 +154,22 @@ export default {
       headers: {
         Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
       },
+      responseType: 'blob',
     };
-    return axios
+    await axios
       .get(`${baseURL}/api/v1/courses/pdf/${name}`, config)
-      .then((response) => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
+      .then((res) => {
+        // set the blog type to final pdf
+        const file = new Blob([res.data], { type: 'application/pdf' });
+
+        // process to auto download it
+        const fileURL = URL.createObjectURL(file);
         const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'test.pdf');
-        document.body.appendChild(link);
+        link.href = fileURL;
+        link.download = name;
         link.click();
-        document.body.removeChild(link);
       })
-      .catch(() => false);
+      .catch(() => console.log('Error'));
   },
 
   async addPDFtoCourse(id, pdfData) {
@@ -193,6 +196,30 @@ export default {
     };
     return axios
       .post(`${baseURL}/api/v1/courses/${id}/video`, videoData, config)
+      .then((response) => response.data)
+      .catch(() => false);
+  },
+
+  async addQuiztoCourse(id, quiz) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+      },
+    };
+    return axios
+      .post(`${baseURL}/api/v1/courses/${id}/quiz`, quiz, config)
+      .then((response) => response.data)
+      .catch(() => false);
+  },
+
+  async submitQuiz(id, answers) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+      },
+    };
+    return axios
+      .post(`${baseURL}/api/v1/courses/submit-quiz-answers/${id}`, answers, config)
       .then((response) => response.data)
       .catch(() => false);
   },

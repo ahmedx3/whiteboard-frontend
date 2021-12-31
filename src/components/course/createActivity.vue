@@ -114,18 +114,6 @@
                     :rules="[(v) => !!v || 'Required']"
                   >
                   </v-text-field>
-                  <v-text-field
-                    color="deep-purple"
-                    label="Quiz Total Grade"
-                    v-model="quiz.grade"
-                    :rules="[
-                      (v) => !!v || 'Required',
-                      (v) => (v > 0 && v <= 100) || 'Grade Must be between 1 and 100',
-                    ]"
-                    type="number"
-                    hide-spin-buttons
-                  >
-                  </v-text-field>
                 </v-col>
               </v-row>
 
@@ -148,7 +136,7 @@
                     :key="j"
                     color="deep-purple"
                     :label="j === 1 ? `Correct Answer` : `Answer ${j}`"
-                    v-model="question.answers[j - 1]"
+                    v-model="question.options[j - 1]"
                     :rules="[(v) => !!v || 'Required']"
                   >
                   </v-text-field>
@@ -193,11 +181,10 @@ export default {
       videoName: null,
       quiz: {
         name: null,
-        grade: null,
         questions: [
           {
             question: null,
-            answers: [],
+            options: [],
           },
         ],
       },
@@ -264,28 +251,50 @@ export default {
     addQuestion() {
       this.quiz.questions.push({
         question: null,
-        answers: [],
+        options: [],
       });
     },
     removeQuestion(index) {
       this.quiz.questions.splice(index, 1);
     },
-    addQuiz() {
+    async addQuiz() {
       if (!this.$refs.quiz.validate()) {
         return;
       }
       //   Upload
-      console.log(this.quiz);
-      this.quiz = {
-        name: null,
-        grade: null,
-        questions: [
-          {
-            question: null,
-            answers: [],
-          },
-        ],
-      };
+      const response = await api.addQuiztoCourse(this.$route.params.courseId, {
+        title: this.quiz.name,
+        mcqs: this.quiz.questions.map((question) => ({
+          ...question,
+          correctAns: question.options[0],
+        })),
+      });
+
+      if (response.status === 'success') {
+        // Alert User that it was created
+        this.$store.state.snackbarMessage = 'Quiz Added to Content';
+        this.$store.state.snackbar = true;
+        this.$store.state.snackbarColor = 'success';
+
+        // Fetch the course again
+        this.$emit('refetch');
+
+        // Reset Values
+        this.quiz = {
+          name: null,
+          questions: [
+            {
+              question: null,
+              options: [],
+            },
+          ],
+        };
+      } else {
+        // Alert User that it was failed
+        this.$store.state.snackbarMessage = 'Failed to add Quiz';
+        this.$store.state.snackbar = true;
+        this.$store.state.snackbarColor = 'error';
+      }
     },
   },
 };
