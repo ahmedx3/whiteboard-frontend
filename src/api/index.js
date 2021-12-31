@@ -135,7 +135,7 @@ export default {
       .catch(() => false);
   },
 
-  // ************************ Course Page ************************ //
+  // ************************ Course Activities ************************ //
 
   async fetchSingleCourse(id) {
     const config = {
@@ -169,7 +169,7 @@ export default {
         link.download = name;
         link.click();
       })
-      .catch(() => console.log('Error'));
+      .catch(() => false);
   },
 
   async addPDFtoCourse(id, pdfData) {
@@ -220,6 +220,44 @@ export default {
     };
     return axios
       .post(`${baseURL}/api/v1/courses/submit-quiz-answers/${id}`, answers, config)
+      .then((response) => response.data)
+      .catch(() => false);
+  },
+
+  // ************************ Course Threads ************************ //
+
+  async fetchCourseThreads(id) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+      },
+    };
+    return axios
+      .get(`${baseURL}/api/v1/courses/${id}/thread`, config)
+      .then((response) => response.data)
+      .catch(() => false);
+  },
+
+  async createThread(id, thread) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+      },
+    };
+    return axios
+      .post(`${baseURL}/api/v1/courses/${id}/thread`, thread, config)
+      .then((response) => response.data)
+      .catch(() => false);
+  },
+
+  async addThreadAnswer(id, answer) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+      },
+    };
+    return axios
+      .post(`${baseURL}/api/v1/courses/thread/${id}`, answer, config)
       .then((response) => response.data)
       .catch(() => false);
   },
