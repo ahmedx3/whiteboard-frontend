@@ -59,7 +59,7 @@
           <template v-slot:activator="{ on, attrs }">
             <v-btn v-bind="attrs" v-on="on" color="#b8860b">
               <v-icon left> mdi-plus </v-icon>
-              Create
+              Create Course
             </v-btn>
           </template>
           <v-card>
@@ -70,34 +70,40 @@
               <v-container>
                 <v-row>
                   <v-col cols="12">
-                    <v-text-field
-                      label="Course Name*"
-                      placeholder="Course Name*"
-                      outlined
-                      required
-                      dense
-                      v-model="newCourse.name"
-                    ></v-text-field>
+                    <v-form ref="form1">
+                      <v-text-field
+                        label="Course Name*"
+                        placeholder="Course Name*"
+                        outlined
+                        :rules="rules.name"
+                        dense
+                        v-model="newCourse.name"
+                      ></v-text-field>
+                    </v-form>
                   </v-col>
                   <v-col cols="12">
-                    <v-text-field
-                      label="Course Description*"
-                      placeholder="Course Description*"
-                      outlined
-                      required
-                      dense
-                      v-model="newCourse.description"
-                    ></v-text-field>
+                    <v-form ref="form2">
+                      <v-text-field
+                        label="Course Description*"
+                        placeholder="Course Description*"
+                        outlined
+                        :rules="rules.name"
+                        dense
+                        v-model="newCourse.description"
+                      ></v-text-field>
+                    </v-form>
                   </v-col>
                   <v-col cols="12">
-                    <v-select
-                      :items="['Beginner', 'Intermediate', 'Advanced']"
-                      label="Difficulty*"
-                      required
-                      outlined
-                      dense
-                      v-model="newCourse.difficulty"
-                    ></v-select>
+                    <v-form ref="form3">
+                      <v-select
+                        :items="['Beginner', 'Intermediate', 'Advanced']"
+                        label="Difficulty*"
+                        outlined
+                        dense
+                        :rules="rules.name"
+                        v-model="newCourse.difficulty"
+                      ></v-select>
+                    </v-form>
                   </v-col>
                 </v-row>
               </v-container>
@@ -130,6 +136,9 @@ export default {
         description: '',
         difficulty: '',
       },
+      rules: {
+        name: [(val) => (val || '').length > 0 || 'This field is required'],
+      },
     };
   },
   mounted() {
@@ -153,11 +162,17 @@ export default {
     },
     createCourse() {
       api.createCourse(this.newCourse).then((res) => {
-        this.dialog = false;
-        this.$router.push({ path: `/course/${res.data.id}` });
-        this.$store.state.snackbarMessage = 'Course created successfully';
-        this.$store.state.snackbar = true;
-        this.$store.state.snackbarColor = 'primary';
+        if (
+          this.$refs.form1.validate() &&
+          this.$refs.form2.validate() &&
+          this.$refs.form3.validate()
+        ) {
+          this.dialog = false;
+          this.$router.push({ path: `/course/${res.data.id}` });
+          this.$store.state.snackbarMessage = 'Course created successfully';
+          this.$store.state.snackbar = true;
+          this.$store.state.snackbarColor = 'primary';
+        }
       });
     },
   },
