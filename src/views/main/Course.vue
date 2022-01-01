@@ -12,7 +12,7 @@
             <v-col
               :class="{
                 'col-4': $vuetify.breakpoint.mdAndUp,
-                'col-12': $vuetify.breakpoint.smAndDown,
+                'col-10': $vuetify.breakpoint.smAndDown,
                 'px-10': $vuetify.breakpoint.smAndUp,
               }"
             >
@@ -26,7 +26,7 @@
               }"
               class="white--text"
             >
-              <v-row>
+              <v-row :justify="$vuetify.breakpoint.smAndDown ? 'center' : 'start'">
                 <v-col cols="auto">
                   <h2
                     :class="{
@@ -48,7 +48,11 @@
                   </div>
                 </v-col>
               </v-row>
-              <div>
+              <div
+                :class="{
+                  'text-center': $vuetify.breakpoint.smAndDown,
+                }"
+              >
                 <v-chip class="px-5" text-color="white" color="deep-purple">
                   {{ course.difficulty }}
                 </v-chip>
@@ -56,6 +60,7 @@
               <div
                 :class="{
                   'text-h4': $vuetify.breakpoint.smAndUp,
+                  'text-center': $vuetify.breakpoint.smAndDown,
                   'text-subtitle-1': $vuetify.breakpoint.xs,
                 }"
                 class="font-weight-light mb-3 mt-6"
@@ -68,23 +73,32 @@
       </v-container>
 
       <!-- Content Tabs -->
-      <v-tabs centered dark background-color="#3f3d56" v-model="currentTab" fixed-tabs>
-        <v-tab key="0">Threads</v-tab>
-        <v-tab key="1">Content</v-tab>
+      <v-tabs
+        centered
+        dark
+        background-color="#3f3d56"
+        v-model="currentTab"
+        :fixed-tabs="!$vuetify.breakpoint.xs"
+      >
+        <v-tab key="0">Content</v-tab>
+        <v-tab key="1">Threads</v-tab>
         <v-tab key="2" v-if="ownsCourse">Add Activity</v-tab>
       </v-tabs>
 
       <!-- Content -->
-
       <v-container class="new-container py-8">
-        <template v-if="currentTab == 1">
+        <template v-if="currentTab == 0">
           <div class="text-h1 text-center">Course Content</div>
-          <CourseContent :activities="course.activities" v-if="course.activities.length" />
+          <CourseContent
+            @refetch="getCourse(false)"
+            :activities="course.activities"
+            v-if="course.activities.length"
+          />
           <div v-else class="text-overline my-6 text-center">
             Oops, It appears that there is no content yet.
           </div>
         </template>
-        <template v-else-if="currentTab == 0">
+        <template v-else-if="currentTab == 1">
           <div class="text-h1 text-center">Threads</div>
           <CourseThreads />
         </template>
@@ -136,9 +150,11 @@ export default {
         this.image = img3;
       }
     },
-    async getCourse() {
+    async getCourse(load = false) {
       this.currentTab = 0;
-      this.loading = true;
+      if (load) {
+        this.loading = true;
+      }
       const { courseId } = this.$route.params;
       this.course = await api.fetchSingleCourse(courseId);
 

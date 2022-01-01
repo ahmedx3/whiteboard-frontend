@@ -257,7 +257,7 @@ export default {
       },
     };
     return axios
-      .post(`${baseURL}/api/v1/courses/thread/${id}`, answer, config)
+      .patch(`${baseURL}/api/v1/courses/thread/${id}`, answer, config)
       .then((response) => response.data)
       .catch(() => false);
   },

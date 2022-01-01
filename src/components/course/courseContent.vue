@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row align="center" justify="center">
-      <v-col cols="9">
+      <v-col sm="9" xs="12" class="pa-0 mt-5">
         <v-timeline align-top dense>
           <v-timeline-item
             v-for="(item, i) in activities"
@@ -95,8 +95,21 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="green lighten-1" v-if="grade == null" text @click="closeQuizModal(true)">
+            <v-btn
+              color="green lighten-1"
+              v-if="grade == null && user.type !== 'instructor'"
+              text
+              @click="closeQuizModal(true)"
+            >
               Save
+            </v-btn>
+            <v-btn
+              color="green lighten-1"
+              v-if="grade != null && user.type !== 'instructor'"
+              text
+              @click="grade = null"
+            >
+              Retake
             </v-btn>
             <v-btn color="blue-grey darken-1" text @click="closeQuizModal(false)"> Close </v-btn>
           </v-card-actions>
@@ -120,6 +133,7 @@ export default {
     grade: null,
     quizLoading: false,
     currentQuizAnswers: [],
+    user: null,
     colors: {
       PDF: 'indigo lighten-2',
       Video: 'blue-grey',
@@ -134,6 +148,7 @@ export default {
   methods: {
     chooseQuiz(item) {
       this.currentQuiz = item;
+      this.grade = item.grades.length ? item.grades[item.grades.length - 1].grade : null;
     },
     async closeQuizModal(save) {
       if (save) {
@@ -152,12 +167,16 @@ export default {
         if (response.status === 'success') {
           this.quizLoading = false;
           this.grade = response.data.grade;
+          this.currentQuizAnswers = [];
         } else {
           // Alert User that it was failed
           this.$store.state.snackbarMessage = 'An error occured';
           this.$store.state.snackbar = true;
           this.$store.state.snackbarColor = 'error';
         }
+
+        // Get content again
+        this.$emit('refetch');
       } else {
         // Reset Quiz data
         this.currentQuiz = null;
@@ -169,6 +188,9 @@ export default {
     async downloadPDF(item) {
       await api.downloadPDF(item.link);
     },
+  },
+  created() {
+    this.user = JSON.parse(localStorage.getItem('userData'));
   },
 };
 </script>

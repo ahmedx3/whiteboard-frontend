@@ -8,7 +8,6 @@
       <!-- SnackBar to show at success of fail -->
       <v-snackbar
         :value="true"
-        absolute
         centered
         top
         :color="$store.state.snackbarColor"

@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-tabs color="#3f3d56" vertical>
+    <v-tabs color="#3f3d56" :vertical="!$vuetify.breakpoint.xs">
       <v-tab>
         <v-icon left> mdi-book-variant </v-icon>
         Upload PDF
@@ -97,7 +97,7 @@
         </v-card>
       </v-tab-item>
 
-      <v-tab-item class="px-3">
+      <v-tab-item>
         <v-card flat>
           <v-card-text>
             <v-row>
