@@ -50,7 +50,10 @@
       <v-row
         align="center"
         justify="center"
-        v-if="$store.state.currentUser && $store.state.currentUser.type === 'instructor'"
+        v-if="
+          ($store.state.currentUser && $store.state.currentUser.type === 'instructor') ||
+          ($store.state.currentUser && $store.state.currentUser.type === 'admin')
+        "
       >
         <v-dialog v-model="dialog" max-width="600px">
           <template v-slot:activator="{ on, attrs }">

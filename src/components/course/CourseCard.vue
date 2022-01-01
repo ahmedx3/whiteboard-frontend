@@ -45,8 +45,9 @@
         </v-row>
         <v-row>
           <v-col class="pa-0">
-            <h1 class="text-caption font-weight-bold">By {{course.instructor.firstName}}
-            {{course.instructor.lastName}}</h1>
+            <h1 class="text-caption font-weight-bold">
+              By {{ course.instructor.firstName }} {{ course.instructor.lastName }}
+            </h1>
           </v-col>
         </v-row>
         <v-row>
@@ -56,7 +57,7 @@
             </p>
           </v-col>
           <v-col class="display-flex hidden-sm-and-down">
-            <v-btn large color="#017A9B">Learn More</v-btn>
+            <v-btn large color="#3f3d56">Learn More</v-btn>
           </v-col>
         </v-row>
         <v-row>
@@ -67,7 +68,7 @@
         </v-row>
         <v-row>
           <v-col class="pa-0 mt-6 hidden-md-and-up">
-            <v-btn large color="#017A9B" block>Learn More</v-btn>
+            <v-btn large color="#3f3d56" block>Learn More</v-btn>
           </v-col>
         </v-row>
       </v-container>

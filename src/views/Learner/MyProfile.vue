@@ -20,9 +20,29 @@
               </v-row>
               <v-row>
                 <v-col class="display-flex">
-                  <h1 class="text-h2 font-weight-regular">
+                  <h1 class="text-h2 font-weight-bold">
                     {{ $store.state.currentUser.firstName }} {{ $store.state.currentUser.lastName }}
                   </h1>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col class="display-flex">
+                  <h1 class="text-h2 font-weight-regular deep-purple--text text--darken-4">
+                    My Grades
+                  </h1>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col class="display-flex">
+                  <v-progress-circular
+                    :rotate="-90"
+                    :size="120"
+                    :width="10"
+                    :value="gradePercentage"
+                    color="#48465E"
+                  >
+                    {{ minorGrade }}/{{ totalGrade }}
+                  </v-progress-circular>
                 </v-col>
               </v-row>
             </v-container>
@@ -54,7 +74,7 @@
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
                     v-model="user.birthDate"
-                    label="Picker in menu"
+                    label="Birthdate"
                     prepend-icon="mdi-calendar"
                     readonly
                     v-bind="attrs"
@@ -89,6 +109,10 @@ export default {
         email: '',
         birthDate: '',
       },
+      grades: [],
+      minorGrade: 0,
+      totalGrade: 0,
+      gradePercentage: 0,
       newUserData: {},
       rules: [(v) => !!v || 'Required'],
     };
@@ -97,6 +121,18 @@ export default {
     fetchUserData() {
       api.fetchUserProfile().then((response) => {
         this.user = response.data;
+      });
+    },
+    fetchCurrentUserGrades() {
+      api.fetchCurrentUserGrades().then((response) => {
+        this.grades = response.data;
+        this.minorGrade = this.grades.reduce((acc, grade) => {
+          return acc + grade.grade;
+        }, 0);
+        this.totalGrade = this.grades.reduce((acc, grade) => {
+          return acc + grade.total;
+        }, 0);
+        this.gradePercentage = Math.round((this.minorGrade / this.totalGrade) * 100);
       });
     },
     updateUserProfile() {
@@ -117,6 +153,7 @@ export default {
   },
   mounted() {
     this.fetchUserData();
+    this.fetchCurrentUserGrades();
   },
   beforeRouteEnter(to, from, next) {
     if (!localStorage.getItem('userData')) {

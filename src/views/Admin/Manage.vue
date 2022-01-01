@@ -24,6 +24,7 @@
                   disabled
                   v-model="switchOn"
                   :label="user.type"
+                  color="green"
                 ></v-switch>
                 <v-switch
                   v-if="user.type === 'learner'"

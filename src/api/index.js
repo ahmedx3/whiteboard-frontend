@@ -109,6 +109,18 @@ export default {
       .catch(() => false);
   },
 
+  async fetchCurrentUserGrades() {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+      },
+    };
+    return axios
+      .get(`${baseURL}/api/v1/users/me/grades`, config)
+      .then((response) => response.data)
+      .catch(() => false);
+  },
+
   // ************************ Admin ************************ //
 
   async fetchAllUsers() {

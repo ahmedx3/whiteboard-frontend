@@ -8,8 +8,8 @@
             <h1
               class="font-weight-bold mb-5 text-center"
               :class="{
-                'text-h4': $vuetify.breakpoint.xs,
-                'text-h3': $vuetify.breakpoint.sm,
+                'text-h1': $vuetify.breakpoint.xs,
+                'text-h1': $vuetify.breakpoint.sm,
                 'text-large': $vuetify.breakpoint.mdAndUp,
               }"
             >
@@ -18,8 +18,8 @@
             <p
               class="mb-10"
               :class="{
-                'text-subtitle-1': $vuetify.breakpoint.xs,
-                'text-h5': $vuetify.breakpoint.sm,
+                'text-h4': $vuetify.breakpoint.xs,
+                'text-h3': $vuetify.breakpoint.sm,
                 'text-h3': $vuetify.breakpoint.mdAndUp,
               }"
             >
@@ -103,7 +103,7 @@
             width="200"
             height="80"
             to="/register"
-            color="blue darken-1"
+            color="primary"
             class="white--text mb-10 text-h4"
             outlined
             :class="{
@@ -146,7 +146,7 @@
         <v-row>
           <v-col md="3" sm="6" cols="12">
             <v-card color="rgb(245, 245, 245)" elevation="0" class="text-center pa-5">
-              <v-icon size="60" color="blue lighten-1" class="mb-8">mdi-note-edit</v-icon>
+              <v-icon size="60" color="primary" class="mb-8">mdi-note-edit</v-icon>
               <h3 class="mb-3 text-h4 font-weight-light">
                 Take your quizes online and know your results immediately.
               </h3>
@@ -155,7 +155,7 @@
 
           <v-col md="3" sm="6" cols="12">
             <v-card color="rgb(245, 245, 245)" elevation="0" class="text-center pa-5">
-              <v-icon size="60" color="blue lighten-1" class="mb-8">mdi-youtube</v-icon>
+              <v-icon size="60" color="primary" class="mb-8">mdi-youtube</v-icon>
               <h3 class="mb-3 text-h4 font-weight-light">
                 Watch youtube videos and learn from the best.
               </h3>
@@ -164,7 +164,7 @@
 
           <v-col md="3" sm="6" cols="12">
             <v-card color="rgb(245, 245, 245)" elevation="0" class="text-center pa-5">
-              <v-icon size="60" color="blue lighten-1" class="mb-8">mdi-account-question</v-icon>
+              <v-icon size="60" color="primary" class="mb-8">mdi-account-question</v-icon>
               <h3 class="mb-3 text-h4 font-weight-light">
                 Ask questions and have answers from your instructors.
               </h3>
@@ -173,7 +173,7 @@
 
           <v-col md="3" sm="6" cols="12">
             <v-card color="rgb(245, 245, 245)" elevation="0" class="text-center pa-5">
-              <v-icon size="60" color="blue lighten-1" class="mb-8">mdi-lightbulb</v-icon>
+              <v-icon size="60" color="primary" class="mb-8">mdi-lightbulb</v-icon>
               <h3 class="mb-3 text-h4 font-weight-light">Explore different ways to learn</h3>
             </v-card>
           </v-col>
@@ -185,7 +185,7 @@
               width="200"
               height="80"
               to="/register"
-              color="blue darken-1"
+              color="primary"
               class="white--text text-h4"
               outlined
               :class="{

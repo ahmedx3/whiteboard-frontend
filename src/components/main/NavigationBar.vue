@@ -99,7 +99,7 @@
                 rounded
                 to="/register"
                 class="text-none text-h4"
-                color="green accent-4"
+                color="#48465E"
               >
                 Register
               </v-btn>
