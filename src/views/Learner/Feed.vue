@@ -34,18 +34,6 @@
             My Courses
           </h1>
         </v-col>
-        <v-col cols="8">
-          <v-text-field
-            class="my-5"
-            outlined
-            label="Search for courses"
-            append-icon="mdi-magnify"
-            flat
-            clearable
-            dense
-            background-color="white"
-          ></v-text-field>
-        </v-col>
       </v-row>
       <v-row
         align="center"
