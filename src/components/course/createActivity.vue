@@ -131,11 +131,19 @@
                     "
                   >
                   </v-text-field>
+                  <v-select
+                    color="deep-purple"
+                    label="Correct Choice"
+                    :items="[1, 2, 3, 4]"
+                    v-model="question.correctAns"
+                    :rules="[(v) => !!v || 'Required']"
+                  >
+                  </v-select>
                   <v-text-field
                     v-for="j in 4"
                     :key="j"
                     color="deep-purple"
-                    :label="j === 1 ? `Correct Answer` : `Answer ${j}`"
+                    :label="`Answer ${j}`"
                     v-model="question.options[j - 1]"
                     :rules="[(v) => !!v || 'Required']"
                   >
@@ -185,6 +193,7 @@ export default {
           {
             question: null,
             options: [],
+            correctAns: null,
           },
         ],
       },
@@ -252,6 +261,7 @@ export default {
       this.quiz.questions.push({
         question: null,
         options: [],
+        correctAns: null,
       });
     },
     removeQuestion(index) {
@@ -266,7 +276,7 @@ export default {
         title: this.quiz.name,
         mcqs: this.quiz.questions.map((question) => ({
           ...question,
-          correctAns: question.options[0],
+          correctAns: question.options[question.correctAns - 1],
         })),
       });
 
@@ -286,6 +296,7 @@ export default {
             {
               question: null,
               options: [],
+              correctAns: null,
             },
           ],
         };
