@@ -29,14 +29,6 @@
               >Advanced</v-chip
             >
           </v-col>
-          <v-col class="pa-0">
-            <v-rating
-              readonly
-              background-color="orange lighten-3"
-              color="orange"
-              class="px-5"
-            ></v-rating
-          ></v-col>
         </v-row>
         <v-row>
           <v-col class="pa-0 mt-3">
@@ -60,12 +52,7 @@
             <v-btn large color="#3f3d56">Learn More</v-btn>
           </v-col>
         </v-row>
-        <v-row>
-          <v-col class="pa-0">
-            <span class="mr-5">2h 3m</span>
-            <v-icon>mdi-clock</v-icon>
-          </v-col>
-        </v-row>
+
         <v-row>
           <v-col class="pa-0 mt-6 hidden-md-and-up">
             <v-btn large color="#3f3d56" block>Learn More</v-btn>
