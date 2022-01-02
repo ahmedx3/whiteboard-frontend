@@ -64,7 +64,7 @@
             <span class="text-h2">Quiz: {{ currentQuiz.title }}</span>
           </v-card-title>
 
-          <v-card-text v-if="grade != null" class="my-6">
+          <v-card-text v-if="grade != null && user.type != 'instructor'" class="my-6">
             <div class="text-h4 text-center">Your Grade is</div>
             <div class="text-h3 text-center">{{ grade }} / {{ currentQuiz.mcqs.length }}</div>
           </v-card-text>
