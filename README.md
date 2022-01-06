@@ -13,7 +13,7 @@
 - [Contributors](#contributors)
   
 ## About Whiteboard
-> **Whiteboard** is a creating learning management system. We connect a deep understanding of education with the power of technology to continuously push the boundaries of learning.
+> **Whiteboard** is a learning management system. We connect a deep understanding of education with the power of technology to continuously push the boundaries of learning.
   
 ### Build with
 - [Vue JS](https://vuejs.org/)
