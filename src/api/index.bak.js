@@ -1,6 +1,5 @@
 // eslint-disable-next-line import/no-unresolved
 import axios from 'axios';
-// import Vue from 'vue';
 
 const baseURL = 'http://localhost:3000';
 
@@ -12,20 +11,6 @@ axios.interceptors.request.use(
   },
   (err) => Promise.reject(err),
 );
-
-{
-  // Add dummy user data for testing
-  const userData = {
-    val: 'Test_Val',
-    user: {
-      type: 'admin',
-    },
-  };
-  localStorage.setItem('userData', JSON.stringify(userData.user));
-  // Vue.store.state.currentUser = userData.user;
-  // console.log(`[/labs] localStorage.getItem('userData') :
-  // ${ localStorage.getItem('userData') }`);
-}
 
 export default {
   // ************************ Authentication ************************ //
