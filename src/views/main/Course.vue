@@ -81,8 +81,10 @@
         :fixed-tabs="!$vuetify.breakpoint.xs"
       >
         <v-tab key="0">Content</v-tab>
-        <v-tab key="1">Threads</v-tab>
-        <v-tab key="2" v-if="ownsCourse">Add Activity</v-tab>
+        <!-- hiding these tabs as they're not yet needed for courses,
+        only instructor created assignments -->
+        <v-tab key="1" v-if="false">Threads</v-tab>
+        <v-tab key="2" v-if="ownsCourse && false">Add Activity</v-tab>
       </v-tabs>
 
       <!-- Content -->
