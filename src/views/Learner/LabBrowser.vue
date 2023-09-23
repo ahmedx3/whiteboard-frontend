@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-container>
+      <!-- Page title -->
       <v-row>
         <v-col cols="4">
           <h1
@@ -35,6 +36,7 @@
           </h1>
         </v-col>
       </v-row>
+      <!-- Create Course Dialog Modal -->
       <v-row
         align="center"
         justify="center"
@@ -44,17 +46,20 @@
         "
       >
         <v-dialog v-model="dialog" max-width="600px">
+          <!-- create course button -->
           <template v-slot:activator="{ on, attrs }">
             <v-btn v-bind="attrs" v-on="on" color="#b8860b">
               <v-icon left> mdi-plus </v-icon>
               Create Course
             </v-btn>
           </template>
+          <!-- create course dialog details -->
           <v-card>
             <v-card-title>
               <span class="text-h2 font-weight-normal">New Course</span>
             </v-card-title>
             <v-card-text>
+              <!-- create course form fields -->
               <v-container>
                 <v-row>
                   <v-col cols="12">
@@ -97,6 +102,7 @@
               </v-container>
               <small>*indicates required field</small>
             </v-card-text>
+            <!-- create course form submit actions -->
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="red" outlined @click="dialog = false"> Close </v-btn>
@@ -105,6 +111,7 @@
           </v-card>
         </v-dialog>
       </v-row>
+      <!-- Course Cards List -->
       <course-card v-for="(course, i) in courses" :key="i" :course="course"></course-card>
     </v-container>
   </div>
