@@ -130,6 +130,10 @@ export default {
     };
   },
   mounted() {
+    // log contents of store
+    // console.log(`[/labs] JSON.stringify(this.$store.state) :
+    // ${JSON.stringify(this.$store.state)}`);
+
     // If user is instuctor, get my courses
     if (this.$store.state.currentUser.type === 'instructor') {
       this.fetchMyCourse();
@@ -141,6 +145,8 @@ export default {
     fetchAllCourses() {
       api.fetchAllCourses().then((res) => {
         this.courses = res.data;
+        console.log(`[/labs] JSON.stringify(this.courses) :
+        ${JSON.stringify(this.courses)}`);
       });
     },
     fetchMyCourse() {

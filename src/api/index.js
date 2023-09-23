@@ -1,6 +1,7 @@
 // eslint-disable-next-line import/no-unresolved
 import axios from 'axios';
 // import Vue from 'vue';
+import store from '@/store';
 
 const baseURL = 'http://localhost:3000';
 
@@ -13,19 +14,38 @@ axios.interceptors.request.use(
   (err) => Promise.reject(err),
 );
 
-{
-  // Add dummy user data for testing
-  const userData = {
-    val: 'Test_Val',
-    user: {
-      type: 'admin',
+// Define dummy user data for testing
+const USERDATA = {
+  val: 'Test_Val',
+  user: {
+    type: 'admin',
+    test_user_val: 'hi',
+  },
+};
+const _id = 0;
+const courses = [
+  {
+    _id,
+    difficulty: 'Advanced',
+    name: 'test_course_1',
+    instructor: {
+      firstName: 'first_name',
+      lastName: 'last_name',
     },
-  };
-  localStorage.setItem('userData', JSON.stringify(userData.user));
-  // Vue.store.state.currentUser = userData.user;
-  // console.log(`[/labs] localStorage.getItem('userData') :
-  // ${ localStorage.getItem('userData') }`);
-}
+    description: 'lorem ipsum',
+  },
+];
+// Add user data to local storage and store
+localStorage.setItem('userData', JSON.stringify(USERDATA.user));
+store.state.currentUser = USERDATA.user;
+
+// Testing contents of store by logging to console
+// console.log(`[api] localStorage.getItem('userData') :
+// ${localStorage.getItem('userData')}`);
+// console.log(`[api] Vue.store :
+// ${Vue.store}`);
+// console.log(`[api] store :
+// ${JSON.stringify(store.state)}`);
 
 export default {
   // ************************ Authentication ************************ //
@@ -63,15 +83,19 @@ export default {
   // ************************ Feed ************************ //
 
   async fetchAllCourses() {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
-      },
-    };
-    return axios
-      .get(`${baseURL}/api/v1/courses`, config)
-      .then((response) => response.data)
-      .catch(() => false);
+    // return dummy course data
+    return { data: courses };
+
+    // original
+    // const config = {
+    //   headers: {
+    //     Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+    //   },
+    // };
+    // return axios
+    //   .get(`${baseURL}/api/v1/courses`, config)
+    //   .then((response) => response.data)
+    //   .catch(() => false);
   },
 
   async fetchMyCourses() {
