@@ -29,10 +29,12 @@ const courses = [
     difficulty: 'Advanced',
     name: 'test_course_1',
     instructor: {
+      id: -1,
       firstName: 'first_name',
       lastName: 'last_name',
     },
     description: 'lorem ipsum',
+    activities: [],
   },
 ];
 // Add user data to local storage and store
@@ -86,7 +88,7 @@ export default {
     // return dummy course data
     return { data: courses };
 
-    // original
+    // @TODO original
     // const config = {
     //   headers: {
     //     Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
@@ -189,15 +191,19 @@ export default {
   // ************************ Course Activities ************************ //
 
   async fetchSingleCourse(id) {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
-      },
-    };
-    return axios
-      .get(`${baseURL}/api/v1/courses/${id}`, config)
-      .then((response) => response.data.data)
-      .catch(() => false);
+    // return a course from dummy courses list
+    return courses[id];
+
+    // @TODO original
+    // const config = {
+    //   headers: {
+    //     Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+    //   },
+    // };
+    // return axios
+    //   .get(`${baseURL}/api/v1/courses/${id}`, config)
+    //   .then((response) => response.data.data)
+    //   .catch(() => false);
   },
 
   async downloadPDF(name) {
