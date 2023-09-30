@@ -44,7 +44,7 @@ const routes = [
         component: () => import('@/views/Admin/Manage'),
       },
       {
-        path: 'labs',
+        path: '/labs',
         name: 'labs',
         component: () => import('@/views/Learner/LabBrowser'),
       },
