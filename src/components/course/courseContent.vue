@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row align="center" justify="center">
-      <v-col sm="9" xs="12" class="pa-0 mt-5">
+      <v-col cols="12" class="pa-0 mt-5">
         <!-- Course Activities -->
         <v-timeline align-top dense>
           <!-- activity list -->
@@ -59,22 +59,21 @@
                 <!-- Unity activity -->
                 <template v-if="item.type === 'Unity'">
                   <!-- Start Lab button -->
-                  <!-- <v-btn v-if="!unityGame && !unityGameLoadingProgress" -->
-                  <v-btn
+                  <v-btn v-if="!unityGame"
                     class="mx-auto"
                     :color="colors[item.type]"
                     outlined
                     @click="loadLab(item)"
                   >
-                    Start Lab
+                    {{ !unityGame ? 'Start Lab' : 'Close Lab'}}
                   </v-btn>
                   <!-- Progress Counter (while loading) -->
                   <div v-if="unityGameLoadingProgress && unityGameLoadingProgress < 1"
                     class="mx-auto"
                     >
-                    <p class="text-center " style="font-size: 100pt">
+                    <div class="text-center text-h1">
                       {{ Math.floor(unityGameLoadingProgress * 100) }} %
-                    </p>
+                    </div>
                   </div>
                   <!-- Unity Game -->
                   <div>
@@ -251,17 +250,27 @@ export default {
       await api.downloadPDF(item.link);
     },
     /**
+     * unload already an loaded unity-webgl instance if already present in {@link CourseContent#unityGame}
+     */
+    unloadLab() {
+      if (this.unityGame) {
+        this.unityGame.unload()
+          .then(() => {
+            console.log('unloading unity-webgl instance');
+          })
+          .catch(() => console.log('unable to unload unity-webgl instance'))
+          .finally(() => this.unityGame = null);
+      }
+    },
+    /**
      * Load a unity game as a UnityWebgl object and set it to the
      * {@link CourseContent#unityGame} property
      * @param {object} item object representing a course activity with properties for
      *  each url to load the unity game
      */
     loadLab(item) {
-      // unload existing game if already present
-      // if (this.unityGame) {
-      //   this.unityGame.unload()
-      //     .then(() => console.log('loading unity-webgl instance'));
-      // }
+      // unload lab if already loaded
+      this.unloadLab;
 
       // get unity game asset urls for this activity
       const {
@@ -299,8 +308,7 @@ export default {
     this.user = JSON.parse(localStorage.getItem('userData'));
   },
   destroyed() {
-    this.unityGame.unload()
-      .then(() => console.log('unloading unity-webgl instance'));
+    this.unloadLab();
   },
 };
 </script>

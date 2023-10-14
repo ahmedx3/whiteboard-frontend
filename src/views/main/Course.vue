@@ -87,7 +87,7 @@
         <v-tab key="2" v-if="ownsCourse && false">Add Activity</v-tab>
       </v-tabs>
 
-      <!-- Content -->
+      <!-- Content Tab -->
       <v-container class="new-container py-8">
         <template v-if="currentTab == 0">
           <div class="text-h1 text-center">Course Content</div>
@@ -100,10 +100,12 @@
             Oops, It appears that there is no content yet.
           </div>
         </template>
+        <!-- Course Threads (chat messages) Tab -->
         <template v-else-if="currentTab == 1">
           <div class="text-h1 text-center">Threads</div>
           <CourseThreads />
         </template>
+        <!-- Create Activity Tab -->
         <template v-else-if="currentTab == 2">
           <div class="text-h1 text-center">Create Activity</div>
           <CreateActivity @refetch="getCourse" />
