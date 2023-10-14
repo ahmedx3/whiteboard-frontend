@@ -112,13 +112,13 @@
         </v-dialog>
       </v-row>
       <!-- Course Cards List -->
-      <course-card v-for="(course, i) in courses" :key="i" :course="course"></course-card>
+      <CourseBrowser :courses="courses"></CourseBrowser>
     </v-container>
   </div>
 </template>
 
 <script>
-import CourseCard from '../../components/course/CourseCard.vue';
+import CourseBrowser from '../../components/course/CourseBrowser.vue';
 import api from '@/api';
 
 export default {
@@ -184,7 +184,7 @@ export default {
       next();
     }
   },
-  components: { CourseCard },
+  components: { CourseBrowser },
 };
 </script>
 
