@@ -8,17 +8,17 @@
 import CourseCard from '@/components/course/CourseCard.vue';
 
 export default {
-    name: 'CourseBrowser',
-    components: {
-        CourseCard,
-    },
-    props: {
-        courses: [],
-    },
-    data() {
-        return {
-            
-        }
-    },
-}
+  name: 'CourseBrowser',
+  components: {
+    CourseCard,
+  },
+  props: {
+    courses: [],
+  },
+  data() {
+    return {
+
+    };
+  },
+};
 </script>

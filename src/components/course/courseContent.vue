@@ -80,8 +80,8 @@
                     <!-- unity-webgl component (doesn't work) -->
                     <!-- <UnityVue :unity="unityGame" /> -->
                     <!-- canvas element for unity-webgl -->
-                    <canvas 
-                      width=1920 
+                    <canvas
+                      width=1920
                       height=1080
                       style="width: 100%; height: auto;"
                       :style="unityGameCanvasStyle"
@@ -162,7 +162,7 @@
 
 <script>
 import UnityWebgl from 'unity-webgl';
-import UnityVue from 'unity-webgl/vue';
+// import UnityVue from 'unity-webgl/vue';
 import Loading from '@/components/Loading.vue';
 import api from '@/api';
 
@@ -170,7 +170,7 @@ export default {
   name: 'CourseContent',
   components: {
     Loading,
-    UnityVue,
+    // UnityVue,
   },
   props: {
     activities: [],
@@ -199,12 +199,12 @@ export default {
     },
   }),
   computed: {
-    unityGameCanvasStyle: function () {
-      let displayStyle = this.unityGameLoadingProgress < 1 ? 'none' : 'block';
+    unityGameCanvasStyle() {
+      const displayStyle = this.unityGameLoadingProgress < 1 ? 'none' : 'block';
       return {
-        display: displayStyle
+        display: displayStyle,
       };
-    }
+    },
   },
   methods: {
     chooseQuiz(item) {
@@ -250,7 +250,8 @@ export default {
       await api.downloadPDF(item.link);
     },
     /**
-     * unload already an loaded unity-webgl instance if already present in {@link CourseContent#unityGame}
+     * unload already an loaded unity-webgl instance if
+     * already present in {@link CourseContent#unityGame}
      */
     unloadLab() {
       if (this.unityGame) {
@@ -259,7 +260,9 @@ export default {
             console.log('unloading unity-webgl instance');
           })
           .catch(() => console.log('unable to unload unity-webgl instance'))
-          .finally(() => this.unityGame = null);
+          .finally(() => {
+            this.unityGame = null;
+          });
       }
     },
     /**
@@ -270,7 +273,7 @@ export default {
      */
     loadLab(item) {
       // unload lab if already loaded
-      this.unloadLab;
+      this.unloadLab();
 
       // get unity game asset urls for this activity
       const {
@@ -296,8 +299,8 @@ export default {
           console.log(`Unity progress: ${this.unityGameLoadingProgress}`);
         })
         .on('loaded', (percent) => console.log(`Unity loaded: success ${percent}`))
-        .on('created', (percent) => console.log(`Unity created: success ${percent}`))
-        // .on('device', () => alert('click device ...'));
+        .on('created', (percent) => console.log(`Unity created: success ${percent}`));
+      // .on('device', () => alert('click device ...'));
 
       // manually mount unity webgl instance to existing canvas
       this.unityGameCanvas = document.getElementById(this.unityGameCanvasID);
