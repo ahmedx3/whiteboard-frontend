@@ -3,15 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "config_env": "set NODE_OPTIONS=--openssl-legacy-provider",
-    "serve": "config_env && vue-cli-service serve",
-    "build": "config_env && vue-cli-service build",
-    "lint": "config_env && vue-cli-service lint"
+    "config_env": "export NODE_OPTIONS=--openssl-legacy-provider",
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@vue/composition-api": "^1.7.2",
     "axios": "^0.24.0",
     "core-js": "^3.6.5",
     "register-service-worker": "^1.7.1",
+    "unity-webgl": "^3.5.2",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
     "vuetify": "^2.4.0",
