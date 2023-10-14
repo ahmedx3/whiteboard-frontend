@@ -307,7 +307,7 @@ export default {
     if (userData == null) {
       next();
     } else {
-      next('/feed');
+      next('/labs');
     }
   },
   computed: {},

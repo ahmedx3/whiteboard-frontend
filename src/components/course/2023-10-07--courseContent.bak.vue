@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row align="center" justify="center">
-      <v-col cols="12" class="pa-0 mt-5">
+      <v-col sm="9" xs="12" class="pa-0 mt-5">
         <!-- Course Activities -->
         <v-timeline align-top dense>
           <!-- activity list -->
@@ -58,35 +58,28 @@
                 </template>
                 <!-- Unity activity -->
                 <template v-if="item.type === 'Unity'">
-                  <!-- Start Lab button -->
-                  <v-btn v-if="!unityGame"
+                  <!-- start lab button -->
+                  <!-- <v-btn v-if="!unityGame && !unityGameLoadingProgress" -->
+                  <v-btn
                     class="mx-auto"
                     :color="colors[item.type]"
                     outlined
                     @click="loadLab(item)"
                   >
-                    {{ !unityGame ? 'Start Lab' : 'Close Lab'}}
+                    Start Lab
                   </v-btn>
                   <!-- Progress Counter (while loading) -->
-                  <div v-if="unityGameLoadingProgress && unityGameLoadingProgress < 1"
+                  <!-- <div v-if="unityGameLoadingProgress < 1"
                     class="mx-auto"
                     >
-                    <div class="text-center text-h1">
+                    <p class="text-center " style="font-size: 100pt">
                       {{ Math.floor(unityGameLoadingProgress * 100) }} %
-                    </div>
-                  </div>
-                  <!-- Unity Game -->
+                    </p>
+                  </div> -->
+                  <!-- <div v-if="unityGame"> -->
                   <div>
-                    <!-- unity-webgl component (doesn't work) -->
-                    <!-- <UnityVue :unity="unityGame" /> -->
-                    <!-- canvas element for unity-webgl -->
-                    <canvas
-                      width=1920
-                      height=1080
-                      style="width: 100%; height: auto;"
-                      :style="unityGameCanvasStyle"
-                      :id="unityGameCanvasID">
-                    </canvas>
+                    <UnityVue :unity="unityGame" />
+                    <canvas id="unity-canvas" width=1280 height=720 ></canvas>
                   </div>
                 </template>
               </v-card-text>
@@ -162,15 +155,16 @@
 
 <script>
 import UnityWebgl from 'unity-webgl';
-// import UnityVue from 'unity-webgl/vue';
+import UnityVue from 'unity-webgl/vue';
 import Loading from '@/components/Loading.vue';
 import api from '@/api';
+// import '@/assets/builds/lab--ay22-23--hh-ps2--woonsocket-high-school-locke--angry-birds/Build/ver_0.0.5.loader.js'; //eslint-disable-line
 
 export default {
   name: 'CourseContent',
   components: {
     Loading,
-    // UnityVue,
+    UnityVue,
   },
   props: {
     activities: [],
@@ -183,8 +177,6 @@ export default {
     user: null,
     unityGame: null,
     unityGameLoadingProgress: null,
-    unityGameCanvasID: 'unity-canvas',
-    unityGameCanvas: null,
     colors: {
       PDF: 'indigo lighten-2',
       Video: 'blue-grey',
@@ -198,14 +190,6 @@ export default {
       Unity: 'mdi-gamepad-variant',
     },
   }),
-  computed: {
-    unityGameCanvasStyle() {
-      const displayStyle = this.unityGameLoadingProgress < 1 ? 'none' : 'block';
-      return {
-        display: displayStyle,
-      };
-    },
-  },
   methods: {
     chooseQuiz(item) {
       this.currentQuiz = item;
@@ -250,39 +234,19 @@ export default {
       await api.downloadPDF(item.link);
     },
     /**
-     * unload already an loaded unity-webgl instance if
-     * already present in {@link CourseContent#unityGame}
-     */
-    unloadLab() {
-      if (this.unityGame) {
-        this.unityGame.unload()
-          .then(() => {
-            console.log('unloading unity-webgl instance');
-          })
-          .catch(() => console.log('unable to unload unity-webgl instance'))
-          .finally(() => {
-            this.unityGame = null;
-          });
-      }
-    },
-    /**
      * Load a unity game as a UnityWebgl object and set it to the
      * {@link CourseContent#unityGame} property
      * @param {object} item object representing a course activity with properties for
      *  each url to load the unity game
      */
     loadLab(item) {
-      // unload lab if already loaded
-      this.unloadLab();
-
-      // get unity game asset urls for this activity
+      // get unity asset urls from activity
       const {
         loaderUrl,
         dataUrl,
         frameworkUrl,
         codeUrl,
       } = item;
-
       // create unity-webgl instance
       this.unityGame = new UnityWebgl({
         loaderUrl,
@@ -296,22 +260,42 @@ export default {
       this.unityGame
         .on('progress', (percent) => {
           this.unityGameLoadingProgress = percent;
-          console.log(`Unity progress: ${this.unityGameLoadingProgress}`);
+          console.debug(`Unity progress: ${this.unityGameLoadingProgress}`);
         })
-        .on('loaded', (percent) => console.log(`Unity loaded: success ${percent}`))
-        .on('created', (percent) => console.log(`Unity created: success ${percent}`));
-      // .on('device', () => alert('click device ...'));
+        .on('loaded', (percent) => console.debug(`Unity loaded: success ${percent}`))
+        .on('created', (percent) => console.debug(`Unity created: success ${percent}`));
 
-      // manually mount unity webgl instance to existing canvas
-      this.unityGameCanvas = document.getElementById(this.unityGameCanvasID);
-      this.unityGame.create(this.unityGameCanvas);
+      this.unityGame.on('device', () => alert('click device ...'));
     },
   },
   created() {
     this.user = JSON.parse(localStorage.getItem('userData'));
   },
-  destroyed() {
-    this.unloadLab();
+  mounted() {
+    const loaderScript = document.createElement('script');
+    loaderScript.setAttribute('src', '/builds/lab--ay22-23--hh-ps2--woonsocket-high-school-locke--angry-birds/Build/ver_0.0.5.loader.js');
+    document.body.appendChild(loaderScript);
+
+    const createInstanceScript = document.createElement('script');
+    createInstanceScript.innerHTML = `
+    createUnityInstance(document.querySelector('#unity-canvas'), {
+      dataUrl: '/builds/lab--ay22-23--hh-ps2--woonsocket-high-school-locke--angry-birds/Build/ver_0.0.5.data',
+      frameworkUrl: '/builds/lab--ay22-23--hh-ps2--woonsocket-high-school-locke--angry-birds/Build/ver_0.0.5.framework.js',
+      codeUrl: '/builds/lab--ay22-23--hh-ps2--woonsocket-high-school-locke--angry-birds/Build/ver_0.0.5.wasm',
+      streamingAssetsUrl: '/builds/lab--ay22-23--hh-ps2--woonsocket-high-school-locke--angry-birds/StreamingAssets',
+      companyName: 'Latitude Labs',
+      productName: 'Lab--AY22-23--HS-PS2--Woonsocket-High-School-Locke--Angry-Birds',
+      productVersion: 'ver_0.0.5',
+      // matchWebGLToCanvasSize: false, // Uncomment this to separately
+      // control WebGL canvas render size and DOM element size.
+      // devicePixelRatio: 1, // Uncomment this to override low DPI
+      // rendering on high DPI displays.
+    });
+    `;
+    // document.body.appendChild(createInstanceScript);
+    // add a delay to avoid the ReferenceError that createUnityInstance() in 
+    // the loader script isn't defined
+    setTimeout(()=> document.body.appendChild(createInstanceScript), 1000);
   },
 };
 </script>

@@ -43,6 +43,11 @@ const routes = [
         name: 'manage',
         component: () => import('@/views/Admin/Manage'),
       },
+      {
+        path: '/labs',
+        name: 'labs',
+        component: () => import('@/views/Learner/Courses'),
+      },
     ],
   },
   {

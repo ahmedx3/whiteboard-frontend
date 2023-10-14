@@ -23,3 +23,7 @@ pnpm-debug.log*
 *.sw?
 
 package-lock.json
+
+# lab builds
+src/assets/builds/*
+public/builds/*
