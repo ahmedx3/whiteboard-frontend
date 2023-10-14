@@ -16,6 +16,8 @@
     "operator-linebreak": "off",
     "no-underscore-dangle": "off",
     "linebreak-style": "off",
-    "arrow-body-style": "off"
+    "arrow-body-style": "off",
+    "no-console": "off",
+    "no-plusplus": "off"
   }
 }
