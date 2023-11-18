@@ -122,6 +122,9 @@ import CourseBrowser from '../../components/course/CourseBrowser.vue';
 import api from '@/api';
 
 export default {
+  components: {
+    CourseBrowser,
+  },
   data() {
     return {
       dialog: false,
@@ -184,7 +187,6 @@ export default {
       next();
     }
   },
-  components: { CourseBrowser },
 };
 </script>
 
