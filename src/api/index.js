@@ -170,18 +170,18 @@ export default {
 
   async fetchAllCourses() {
     // return dummy course data
-    return { data: courses };
+    // return { data: courses };
 
     // @TODO original
-    // const config = {
-    //   headers: {
-    //     Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
-    //   },
-    // };
-    // return axios
-    //   .get(`${baseURL}/api/v1/courses`, config)
-    //   .then((response) => response.data)
-    //   .catch(() => false);
+    const config = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+      },
+    };
+    return axios
+      .get(`${baseURL}/api/v1/courses`, config)
+      .then((response) => response.data)
+      .catch(() => false);
   },
 
   async fetchMyCourses() {
