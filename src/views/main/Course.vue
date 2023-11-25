@@ -74,7 +74,10 @@
       </v-container>
 
       <!-- Create Assignment Component -->
-      <AssignCourse></AssignCourse>
+      <AssignCourse 
+      v-if="course" 
+      :course="course">
+      </AssignCourse>
 
       <!-- "Content", "Threads", and "Activity" Tabs -->
       <!-- <v-tabs

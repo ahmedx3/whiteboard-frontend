@@ -131,15 +131,18 @@
 import api from '@/api';
 export default {
   props: {
-    course: Object,
+    course: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
       dialog: false,
-      classes: ['class1', 'class2', 'class3'],
+      classes: ['class0', 'class1', 'class2'],
       newAssignment: {
         instructorID: 1, //@TODO replace or remove when user accounts are implemented
-        courseID: 2, //@TODO read in as a prop from parent component 
+        courseID: this.course._id, //@TODO read in as a prop from parent component 
         classID: '',
         name: '',
         openDate: '',

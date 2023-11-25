@@ -155,8 +155,8 @@ export default {
     fetchAllCourses() {
       api.fetchAllCourses().then((res) => {
         this.courses = res.data;
-        console.log(`[/labs] JSON.stringify(this.courses) :
-        ${JSON.stringify(this.courses)}`);
+        // console.debug(`[/labs] JSON.stringify(this.courses) :
+        // ${JSON.stringify(this.courses)}`);
       });
     },
     fetchMyCourse() {
