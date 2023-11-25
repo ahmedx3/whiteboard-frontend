@@ -274,25 +274,26 @@ export default {
 
   // ************************ Assignments       ************************ //
 
-  async createAssignment(courseData) {
+  async createAssignment(newAssignment) {
     const config = {
       headers: {
         Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
       },
     };
 
-    return new Promise((resolve) => {
-      if (courseData && config) {
-        resolve(true);
-      } else {
-        resolve(false);
-      }
-    });
+    // placeholder functionality
+    // return new Promise((resolve) => {
+    //   if (courseData && config) {
+    //     resolve(true);
+    //   } else {
+    //     resolve(false);
+    //   }
+    // });
 
-    // return axios
-    //   .post(`${baseURL}/api/v1/courses`, courseData, config)
-    //   .then((response) => response.data)
-    //   .catch(() => false);
+    return axios
+      .post(`${baseURL}/api/v1/assignments`, newAssignment, config)
+      .then((response) => response.data)
+      .catch(() => false);
   },
 
   // ************************ Course Activities ************************ //
