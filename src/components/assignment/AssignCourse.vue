@@ -46,7 +46,7 @@
                     <v-form ref="form2">
                       <v-select
                         label="Class*"
-                        :items="['class1', 'class2', 'class3']"
+                        :items="classes"
                         outlined
                         :rules="rules.name"
                         dense
@@ -136,11 +136,14 @@ export default {
   data() {
     return {
       dialog: false,
+      classes: ['class1', 'class2', 'class3'],
       newAssignment: {
-        name: '',
+        instructorID: 1, //@TODO replace or remove when user accounts are implemented
+        courseID: 2, //@TODO read in as a prop from parent component 
         classID: '',
+        name: '',
         openDate: '',
-        dueDate: '',
+        dueDate: null, // initialize due date as null
       },
       rules: {
         name: [(val) => (val || '').length > 0 || 'This field is required'],
@@ -158,22 +161,42 @@ export default {
           this.$refs.form4.validate()
       ) {
         // submission is valid
-        console.debug('Assignment creation form passed validation:');
-        console.debug(JSON.stringify(this.newAssignment));
+        // console.debug('Assignment creation form passed validation:');
+        // console.debug(this.newAssignment);
 
         // close dialog
         this.dialog = false;
-        // post new assignment to server 
-        api.createAssignment(this.newAssignment).then((res) => {
+
+        // reformat submission fields
+        // make a copy of the new assignment object
+        const newAssignmentFormatted = Object.assign({}, this.newAssignment);
+        // console.debug('newAssignment copy');
+        // console.debug(newAssignmentFormatted);
+        // convert courseID to number
+        newAssignmentFormatted.classID = this.classes.indexOf(newAssignmentFormatted.classID);
+        // convert open date to UTC
+        let openDate = new Date(newAssignmentFormatted.openDate);
+        newAssignmentFormatted.openDate = openDate.toISOString();
+        // convert due date to UTC
+        if (newAssignmentFormatted.dueDate !== "" &&
+            newAssignmentFormatted.dueDate !== null) {
+          let dueDate = new Date(newAssignmentFormatted.dueDate);
+          newAssignmentFormatted.dueDate = dueDate.toISOString();
+        } else {
+          newAssignmentFormatted.dueDate = null;
+        }
+
+        // post new assignment to server
+        api.createAssignment(newAssignmentFormatted).then((res) => {
           if (res !== false) {
             // notify user of successful assignment creation
-            this.$store.state.snackbarMessage = 'Assignment Created';
+            this.$store.state.snackbarMessage = 'Assignment created';
             this.$store.state.snackbar = true;
             this.$store.state.snackbarColor = 'success';
           }
           else {
             // notify user of unsuccessful assignment creation
-            this.$store.state.snackbarMessage = 'Unable to Create Assignment ';
+            this.$store.state.snackbarMessage = 'Unable to create assignment ';
             this.$store.state.snackbar = true;
             this.$store.state.snackbarColor = 'error';
           }
@@ -181,8 +204,8 @@ export default {
       }
       else {
         // submission is invalid
-        console.debug('Assignment creation form passed validation:');
-        console.debug(JSON.stringify(this.newAssignment));
+        // console.debug('Assignment creation form failed validation:');
+        // console.debug(this.newAssignment);
       }
     },
   },
