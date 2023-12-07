@@ -13,7 +13,7 @@
         <v-dialog v-model="dialog" max-width="600px">
           <!-- assign course button -->
           <template v-slot:activator="{ on, attrs }">
-            <v-btn v-bind="attrs" v-on="on" color="#b8860b">
+            <v-btn v-bind="attrs" v-on="on" @click="setAssignmentOpenDate()" color="#b8860b">
               <v-icon left> mdi-plus </v-icon>
               Assign Course
             </v-btn>
@@ -61,7 +61,7 @@
                       and validation -->
                       <v-text-field
                         type="datetime-local"
-                        label="Open Date"
+                        label="Open Date*"
                         outlined
                         dense
                         v-model="newAssignment.openDate"
@@ -153,6 +153,9 @@ export default {
       },
     };
   },
+  mounted() {
+    this.newAssignment.name = `${this.course.name} Assignment`;
+  },
   methods: {
     createAssignment() {
       // post new assignment to server if user submission is valid
@@ -211,6 +214,28 @@ export default {
         // console.debug(this.newAssignment);
       }
     },
+    /**
+     * generate a datetime local string in the format required by 
+     *     input elements of type="datetime-local"
+     * - e.g., 2018-06-12T19:30
+     * @param {object} date 
+     */
+    formatDatetimeLocalString(date) {
+      date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+      let datetimeLocalString = date.toISOString().slice(0, 16);
+
+      return datetimeLocalString;
+    },
+    /**
+     * Sets the assignment open date to 12am of the current day 
+     * at the time this method is invoked (local time)
+     */
+    setAssignmentOpenDate() {
+      let date = new Date();
+      date.setHours(0);
+      date.setMinutes(0);
+      this.newAssignment.openDate = this.formatDatetimeLocalString(date);
+    }
   },
 }
 </script>
