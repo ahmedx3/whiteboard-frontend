@@ -11,11 +11,12 @@
           ($store.state.currentUser && $store.state.currentUser.type === 'admin')
         "
       >
-        <v-col>
+        <v-spacer/>
+        <v-col cols="auto">
           <v-dialog v-model="dialog" max-width="600px">
             <!-- assign course button -->
             <template v-slot:activator="{ on, attrs }">
-              <v-btn v-bind="attrs" v-on="on" @click="setAssignmentOpenDate()" color="#b8860b">
+              <v-btn class="ma-0" v-bind="attrs" v-on="on" @click="setAssignmentOpenDate()" color="#b8860b">
                 <v-icon left> mdi-plus </v-icon>
                 Assign Course
               </v-btn>
