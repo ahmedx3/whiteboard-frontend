@@ -3,7 +3,7 @@ import axios from 'axios';
 // import Vue from 'vue';
 import store from '@/store';
 
-const baseURL = 'http://localhost:3000';
+const baseURL = process.env.NODE_ENV === 'production' ? 'http://18.216.26.20:3000' : 'http://localhost:3000';
 
 axios.interceptors.request.use(
   (config) => {

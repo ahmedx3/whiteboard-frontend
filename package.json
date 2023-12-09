@@ -1,6 +1,6 @@
 {
   "name": "latitude-platform-pb2",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "scripts": {
     "config_env": "export NODE_OPTIONS=--openssl-legacy-provider",
