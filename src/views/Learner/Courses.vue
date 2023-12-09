@@ -122,6 +122,9 @@ import CourseBrowser from '../../components/course/CourseBrowser.vue';
 import api from '@/api';
 
 export default {
+  components: {
+    CourseBrowser,
+  },
   data() {
     return {
       dialog: false,
@@ -152,8 +155,8 @@ export default {
     fetchAllCourses() {
       api.fetchAllCourses().then((res) => {
         this.courses = res.data;
-        console.log(`[/labs] JSON.stringify(this.courses) :
-        ${JSON.stringify(this.courses)}`);
+        // console.debug(`[/labs] JSON.stringify(this.courses) :
+        // ${JSON.stringify(this.courses)}`);
       });
     },
     fetchMyCourse() {
@@ -184,7 +187,6 @@ export default {
       next();
     }
   },
-  components: { CourseBrowser },
 };
 </script>
 

@@ -7,6 +7,7 @@
     <template v-else>
       <!--Name and Intro section-->
       <v-container fluid class="IntroSection pt-0 pb-0">
+        <!-- inner container to constrain max width of hero section -->
         <v-container class="new-container">
           <v-row justify="center" class="mt-5 mb-3">
             <v-col
@@ -72,8 +73,14 @@
         </v-container>
       </v-container>
 
-      <!-- Content Tabs -->
-      <v-tabs
+      <!-- Create Assignment Component -->
+      <AssignCourse 
+      v-if="course" 
+      :course="course">
+      </AssignCourse>
+
+      <!-- "Content", "Threads", and "Activity" Tabs -->
+      <!-- <v-tabs
         centered
         dark
         background-color="#3f3d56"
@@ -81,13 +88,13 @@
         :fixed-tabs="!$vuetify.breakpoint.xs"
       >
         <v-tab key="0">Content</v-tab>
-        <!-- hiding these tabs as they're not yet needed for courses,
-        only instructor created assignments -->
+        hiding these tabs as they're not yet needed for courses,
+        only instructor created assignments
         <v-tab key="1" v-if="false">Threads</v-tab>
         <v-tab key="2" v-if="ownsCourse && false">Add Activity</v-tab>
-      </v-tabs>
+      </v-tabs> -->
 
-      <!-- Content Tab -->
+      <!-- "Content" Tab Container -->
       <v-container class="new-container py-8">
         <template v-if="currentTab == 0">
           <div class="text-h1 text-center">Course Content</div>
@@ -123,6 +130,7 @@ import Loading from '@/components/Loading.vue';
 import CourseContent from '@/components/course/courseContent.vue';
 import CreateActivity from '@/components/course/createActivity.vue';
 import CourseThreads from '@/components/course/CourseThreads.vue';
+import AssignCourse from '@/components/assignment/AssignCourse.vue';
 import img1 from '@/assets/course_1.svg';
 import img2 from '@/assets/course_2.svg';
 import img3 from '@/assets/course_3.svg';
@@ -134,6 +142,7 @@ export default {
     CourseContent,
     CreateActivity,
     CourseThreads,
+    AssignCourse,
   },
   data() {
     return {

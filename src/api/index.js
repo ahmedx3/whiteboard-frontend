@@ -170,18 +170,18 @@ export default {
 
   async fetchAllCourses() {
     // return dummy course data
-    return { data: courses };
+    // return { data: courses };
 
     // @TODO original
-    // const config = {
-    //   headers: {
-    //     Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
-    //   },
-    // };
-    // return axios
-    //   .get(`${baseURL}/api/v1/courses`, config)
-    //   .then((response) => response.data)
-    //   .catch(() => false);
+    const config = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+      },
+    };
+    return axios
+      .get(`${baseURL}/api/v1/courses`, config)
+      .then((response) => response.data)
+      .catch(() => false);
   },
 
   async fetchMyCourses() {
@@ -268,6 +268,30 @@ export default {
     };
     return axios
       .patch(`${baseURL}/api/v1/users/${id}`, '', config)
+      .then((response) => response.data)
+      .catch(() => false);
+  },
+
+  // ************************ Assignments       ************************ //
+
+  async createAssignment(newAssignment) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+      },
+    };
+
+    // placeholder functionality
+    // return new Promise((resolve) => {
+    //   if (courseData && config) {
+    //     resolve(true);
+    //   } else {
+    //     resolve(false);
+    //   }
+    // });
+
+    return axios
+      .post(`${baseURL}/api/v1/assignments`, newAssignment, config)
       .then((response) => response.data)
       .catch(() => false);
   },
