@@ -37,12 +37,15 @@
         </v-col>
       </v-row>
       <!-- Create Course Dialog Modal -->
+      <!-- currently hidden as it's non-functional -->
+      <!-- @TODO relocate to dedicated component -->
       <v-row
         align="center"
         justify="center"
         v-if="
-          ($store.state.currentUser && $store.state.currentUser.type === 'instructor') ||
-          ($store.state.currentUser && $store.state.currentUser.type === 'admin')
+          false &&
+          (($store.state.currentUser && $store.state.currentUser.type === 'instructor') ||
+          ($store.state.currentUser && $store.state.currentUser.type === 'admin'))
         "
       >
         <v-dialog v-model="dialog" max-width="600px">
@@ -111,6 +114,7 @@
           </v-card>
         </v-dialog>
       </v-row>
+  
       <!-- Course Cards List -->
       <CourseBrowser :courses="courses"></CourseBrowser>
     </v-container>
