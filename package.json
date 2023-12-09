@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "config_env": "export NODE_OPTIONS=--openssl-legacy-provider",
-    "serve": "vue-cli-service serve",
-    "start:prod": "npm run build && npx serve -p 8080 -s dist/",
     "build": "vue-cli-service build",
+    "dev": "vue-cli-service serve",
+    "serve": "npx serve -p 8080 -s dist/",
+    "start:prod": "npm run build && npm run serve",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
