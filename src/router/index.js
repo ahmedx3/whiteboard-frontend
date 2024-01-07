@@ -34,6 +34,11 @@ const routes = [
         component: () => import('@/views/main/Course'),
       },
       {
+        path: '/assignment/:assignmentId',
+        name: 'course',
+        component: () => import('@/views/main/Assignment'),
+      },
+      {
         path: '/myprofile',
         name: 'myprofile',
         component: () => import('@/views/Learner/MyProfile'),

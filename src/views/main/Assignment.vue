@@ -1,0 +1,233 @@
+<template>
+  <div class="single-course-container">
+    <!--loader Until request finishes-->
+    <Loading v-if="loading"></Loading>
+
+    <!--Single Course Page After Fetching Data-->
+    <template v-else>
+      <!--Name and Intro section-->
+      <v-container fluid class="IntroSection pt-0 pb-0">
+        <!-- inner container to constrain max width of hero section -->
+        <v-container class="new-container">
+          <v-row justify="center" class="mt-5 mb-3">
+            <v-col
+              :class="{
+                'col-4': $vuetify.breakpoint.mdAndUp,
+                'col-10': $vuetify.breakpoint.smAndDown,
+                'px-10': $vuetify.breakpoint.smAndUp,
+              }"
+            >
+              <v-img :src="image"></v-img>
+            </v-col>
+            <v-col
+              :class="{
+                'col-8': $vuetify.breakpoint.mdAndUp,
+                'col-12': $vuetify.breakpoint.smAndDown,
+                'px-10': $vuetify.breakpoint.smAndUp,
+              }"
+              class="white--text"
+            >
+              <v-row :justify="$vuetify.breakpoint.smAndDown ? 'center' : 'start'">
+                <v-col cols="auto">
+                  <h2
+                    :class="{
+                      'mt-5': $vuetify.breakpoint.smAndUp,
+                      'mt-0': $vuetify.breakpoint.xs,
+                    }"
+                    class="font-weight-medium mb-3 text-h1"
+                  >
+                    {{ course.name }}
+                  </h2>
+                </v-col>
+
+                <v-col cols="auto" class="align-bottom">
+                  <div class="text-body font-weight-light mb-3">
+                    Created By
+                    <span class="text-body white--text font-weight-black mb-3">{{
+                      `${course.instructor.firstName} ${course.instructor.lastName}`
+                    }}</span>
+                  </div>
+                </v-col>
+              </v-row>
+              <div
+                :class="{
+                  'text-center': $vuetify.breakpoint.smAndDown,
+                }"
+              >
+                <v-chip class="px-5" text-color="white" color="deep-purple">
+                  {{ course.difficulty }}
+                </v-chip>
+              </div>
+              <div
+                :class="{
+                  'text-h4': $vuetify.breakpoint.smAndUp,
+                  'text-center': $vuetify.breakpoint.smAndDown,
+                  'text-subtitle-1': $vuetify.breakpoint.xs,
+                }"
+                class="font-weight-light mb-3 mt-6"
+              >
+                {{ course.description }}
+              </div>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-container>
+
+      <!-- Create Assignment Component -->
+      <AssignCourse 
+      v-if="course" 
+      :course="course">
+      </AssignCourse>
+
+      <!-- "Content", "Threads", and "Activity" Tabs -->
+      <!-- <v-tabs
+        centered
+        dark
+        background-color="#3f3d56"
+        v-model="currentTab"
+        :fixed-tabs="!$vuetify.breakpoint.xs"
+      >
+        <v-tab key="0">Content</v-tab>
+        hiding these tabs as they're not yet needed for courses,
+        only instructor created assignments
+        <v-tab key="1" v-if="false">Threads</v-tab>
+        <v-tab key="2" v-if="ownsCourse && false">Add Activity</v-tab>
+      </v-tabs> -->
+
+      <!-- "Content" Tab Container -->
+      <v-container class="new-container py-8">
+        <template v-if="currentTab == 0">
+          <div class="text-h1 text-center">Course Content</div>
+          <CourseContent
+            @refetch="getCourse(false)"
+            :activities="course.activities"
+            v-if="course.activities.length"
+          />
+          <div v-else class="text-overline my-6 text-center">
+            Oops, It appears that there is no content yet.
+          </div>
+        </template>
+        <!-- Course Threads (chat messages) Tab -->
+        <template v-else-if="currentTab == 1">
+          <div class="text-h1 text-center">Threads</div>
+          <CourseThreads />
+        </template>
+        <!-- Create Activity Tab -->
+        <template v-else-if="currentTab == 2">
+          <div class="text-h1 text-center">Create Activity</div>
+          <CreateActivity @refetch="getCourse" />
+        </template>
+      </v-container>
+    </template>
+
+    <!--Footer-->
+    <Footer></Footer>
+  </div>
+</template>
+
+<script>
+import Loading from '@/components/Loading.vue';
+import CourseContent from '@/components/course/courseContent.vue';
+import CreateActivity from '@/components/course/createActivity.vue';
+import CourseThreads from '@/components/course/CourseThreads.vue';
+import AssignCourse from '@/components/assignment/AssignCourse.vue';
+import img1 from '@/assets/course_1.svg';
+import img2 from '@/assets/course_2.svg';
+import img3 from '@/assets/course_3.svg';
+import api from '@/api';
+
+export default {
+  components: {
+    Loading,
+    CourseContent,
+    CreateActivity,
+    CourseThreads,
+    AssignCourse,
+  },
+  data() {
+    return {
+      loading: true,
+      assignment: null,
+      course: null,
+      image: null,
+      currentTab: 0,
+      ownsCourse: false,
+    };
+  },
+  methods: {
+    initializeImage(assignmentId) {
+      if (parseInt(assignmentId, 10) % 3 === 0) {
+        this.image = img1;
+      } else if (parseInt(assignmentId, 10) % 3 === 1) {
+        this.image = img2;
+      } else {
+        this.image = img3;
+      }
+    },
+    async getCourse(load = false) {
+      this.currentTab = 0;
+      if (load) {
+        this.loading = true;
+      }
+      const { assignmentId } = this.$route.params;
+      this.course = await api.fetchSingleCourse(assignmentId);
+
+      // If user does not own course
+      const user = JSON.parse(localStorage.getItem('userData'));
+      if (user.id === this.course.instructor.id) {
+        this.ownsCourse = true;
+      }
+      this.loading = false;
+    },
+  },
+  async created() {
+    const { assignmentId } = this.$route.params;
+    this.initializeImage(assignmentId);
+    await this.getCourse();
+  },
+
+  beforeRouteEnter(to, from, next) {
+    if (!localStorage.getItem('userData')) {
+      next({ name: 'login' });
+    } else {
+      next();
+    }
+  },
+};
+</script>
+
+<style scoped>
+.iframe-container {
+  overflow: hidden;
+  padding-top: 56.25%; /* 16:9*/
+  position: relative;
+}
+
+.iframe-container iframe {
+  border: 0;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+.border-small {
+  border: 1px solid #000;
+}
+.IntroSection {
+  background-color: #3f3d56;
+  opacity: 0.95;
+}
+
+.align-bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+@media (min-width: 1904px) {
+  .new-container {
+    max-width: 1440px;
+  }
+}
+</style>
