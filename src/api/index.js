@@ -22,105 +22,6 @@ const USERDATA = {
     test_user_val: 'hi',
   },
 };
-let _id = 0;
-const courses = [
-  {
-    _id: _id++,
-    difficulty: 'Advanced',
-    name: 'test_course_1',
-    instructor: {
-      id: 0,
-      firstName: 'first_name',
-      lastName: 'last_name',
-    },
-    description: 'lorem ipsum',
-    activities: [
-      {
-        title: 'title',
-        type: 'Video',
-        link: 'https://www.youtube.com/watch?v=Wam2inSMpVk&list=PLt1tj839cxwYbUK7MVCAoCRu1IDuVBQYS&index=16',
-      },
-    ],
-  },
-  {
-    _id: _id++,
-    difficulty: 'Intermediate',
-    name: 'Ripple Beach',
-    instructor: {
-      id: 1,
-      firstName: 'Latitude',
-      lastName: 'Labs',
-    },
-    description: 'Wave Sciences',
-    activities: [
-      {
-        title: 'Ripple Beach Lab',
-        type: 'Unity',
-        link: '',
-        loaderUrl:
-          '/builds/lab-ay20-21--ms-PS4--muwekma-ohlone-middle-school-sokk--ripple-beach/Build/2021-11-05_WebGL.loader.js',
-        dataUrl:
-          '/builds/lab-ay20-21--ms-PS4--muwekma-ohlone-middle-school-sokk--ripple-beach/Build/2021-11-05_WebGL.data',
-        frameworkUrl:
-          '/builds/lab-ay20-21--ms-PS4--muwekma-ohlone-middle-school-sokk--ripple-beach/Build/2021-11-05_WebGL.framework.js',
-        // codeUrl:
-        //   'https://lab-builds.s3.us-east-2.amazonaws.com/lab-ay20-21--ms-PS4--muwekma-ohlone-middle-school-sokk--ripple-beach/Build/2021-11-05_WebGL.wasm',
-        codeUrl:
-          '/builds/lab-ay20-21--ms-PS4--muwekma-ohlone-middle-school-sokk--ripple-beach/Build/2021-11-05_WebGL.wasm',
-      },
-    ],
-  },
-  {
-    _id: _id++,
-    difficulty: 'Beginner',
-    name: 'Slingshot Lab',
-    instructor: {
-      id: 2,
-      firstName: 'Latitude',
-      lastName: 'Labs',
-    },
-    description: 'Projectile Motion',
-    activities: [
-      {
-        title: 'Slingshot Lab',
-        type: 'Unity',
-        loaderUrl:
-          '/builds/lab--ay22-23--hh-ps2--woonsocket-high-school-locke--angry-birds/Build/ver_0.0.5.loader.js',
-        dataUrl:
-          '/builds/lab--ay22-23--hh-ps2--woonsocket-high-school-locke--angry-birds/Build/ver_0.0.5.data',
-        frameworkUrl:
-          '/builds/lab--ay22-23--hh-ps2--woonsocket-high-school-locke--angry-birds/Build/ver_0.0.5.framework.js',
-        codeUrl:
-          '/builds/lab--ay22-23--hh-ps2--woonsocket-high-school-locke--angry-birds/Build/ver_0.0.5.wasm',
-      },
-    ],
-  },
-  {
-    _id: _id++,
-    difficulty: 'Beginner',
-    name: 'unity-webgl-vue2-demo',
-    instructor: {
-      id: 3,
-      firstName: 'Unity',
-      lastName: 'WebG:',
-    },
-    description: 'unity-webgl-vue2-demo',
-    activities: [
-      {
-        title: 'unity-webgl-vue2-demo',
-        type: 'Unity',
-        loaderUrl:
-          'https://static-huariot-com.oss-cn-hangzhou.aliyuncs.com/unity/test1/Build/OUT_BIM.loader.js',
-        dataUrl:
-          'https://static-huariot-com.oss-cn-hangzhou.aliyuncs.com/unity/test1/Build/OUT_BIM.data',
-        frameworkUrl:
-          'https://static-huariot-com.oss-cn-hangzhou.aliyuncs.com/unity/test1/Build/OUT_BIM.framework.js',
-        codeUrl:
-          'https://static-huariot-com.oss-cn-hangzhou.aliyuncs.com/unity/test1/Build/OUT_BIM.wasm',
-      },
-    ],
-  },
-];
 // Add user data to local storage and store
 localStorage.setItem('userData', JSON.stringify(USERDATA.user));
 store.state.currentUser = USERDATA.user;
@@ -134,7 +35,9 @@ store.state.currentUser = USERDATA.user;
 // ${JSON.stringify(store.state)}`);
 
 export default {
+
   // ************************ Authentication ************************ //
+
   async loginUser(user) {
     const request = {
       method: 'POST',
@@ -164,48 +67,6 @@ export default {
       .catch((err) => err.response);
 
     return response;
-  },
-
-  // ************************ Feed ************************ //
-
-  async fetchAllCourses() {
-    // return dummy course data
-    // return { data: courses };
-
-    // @TODO original
-    const config = {
-      headers: {
-        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
-      },
-    };
-    return axios
-      .get(`${baseURL}/api/v1/courses`, config)
-      .then((response) => response.data)
-      .catch(() => false);
-  },
-
-  async fetchMyCourses() {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
-      },
-    };
-    return axios
-      .get(`${baseURL}/api/v1/courses/me`, config)
-      .then((response) => response.data)
-      .catch(() => false);
-  },
-
-  async createCourse(courseData) {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
-      },
-    };
-    return axios
-      .post(`${baseURL}/api/v1/courses`, courseData, config)
-      .then((response) => response.data)
-      .catch(() => false);
   },
 
   // ************************ User Profile ************************ //
@@ -272,6 +133,87 @@ export default {
       .catch(() => false);
   },
 
+  // ************************ Courses ************************ //
+
+  /**
+   * Queries the backend for a single course of a given
+   * id and returns it if found.
+   * @param {number} id an integer for the course id
+   * @returns an object with a single 'data' property
+   *    containing an array of courses
+   */
+  async fetchSingleCourse(id) {
+    // convert the id to an int
+    // sometimes it's string parsed from the url params
+    const idNum = parseInt(id, 10);
+    // console.log(`id is ${idNum} and of type ${typeof idNum}`);
+
+    // reuse the fetch all courses method then filter for
+    // the course id specified
+    // @TODO replace with a call to a dedicated single course endpoint
+    return this.fetchAllCourses()
+      .then((courses) => {
+        // console.log(`[api] fetchSingleAssignment [courses]: ${courses}`);
+
+        const matches = courses.data.filter((course) => course._id === idNum)[0];
+        // console.log(`[api] fetchSingleAssignment [matches]: ${matches}`);
+
+        return matches;
+      })
+      .catch(() => false);
+
+    // @TODO original
+    // const config = {
+    //   headers: {
+    //     Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+    //   },
+    // };
+    // return axios
+    //   .get(`${baseURL}/api/v1/courses/${id}`, config)
+    //   .then((response) => response.data.data)
+    //   .catch(() => false);
+  },
+
+  async fetchAllCourses() {
+    // return dummy course data
+    // return { data: courses };
+
+    // @TODO original
+    const config = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+      },
+    };
+    return axios
+      .get(`${baseURL}/api/v1/courses`, config)
+      .then((response) => response.data)
+      .catch(() => false);
+  },
+
+  async fetchMyCourses() {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+      },
+    };
+    return axios
+      .get(`${baseURL}/api/v1/courses/me`, config)
+      .then((response) => response.data)
+      .catch(() => false);
+  },
+
+  async createCourse(courseData) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+      },
+    };
+    return axios
+      .post(`${baseURL}/api/v1/courses`, courseData, config)
+      .then((response) => response.data)
+      .catch(() => false);
+  },
+
   // ************************ Assignments       ************************ //
 
   async createAssignment(newAssignment) {
@@ -295,14 +237,24 @@ export default {
       .then((response) => response.data)
       .catch(() => false);
   },
-
-  // ************************ Course Activities ************************ //
-
-  async fetchSingleCourse(id) {
-    // return a course from dummy courses list
+  async fetchSingleAssignment(id) {
+    // convert the id to an int
+    // sometimes it's string parsed from the url params
     const idNum = parseInt(id, 10);
     // console.log(`id is ${idNum} and of type ${typeof idNum}`);
-    return courses[idNum];
+
+    // reuse the fetch all courses method then filter for
+    // the course id specified
+    return this.fetchAllCourses()
+      .then((courses) => {
+        console.log(`[api] fetchSingleAssignment [courses]: ${courses}`);
+
+        const matches = courses.filter((course) => course._id === idNum)[0];
+        console.log(`[api] fetchSingleAssignment [matches]: ${matches}`);
+
+        return matches;
+      })
+      .catch(() => false);
 
     // @TODO original
     // const config = {
@@ -315,6 +267,8 @@ export default {
     //   .then((response) => response.data.data)
     //   .catch(() => false);
   },
+
+  // ************************ Course Activities ************************ //
 
   async downloadPDF(name) {
     const config = {
