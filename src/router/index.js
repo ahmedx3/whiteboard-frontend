@@ -35,7 +35,7 @@ const routes = [
       },
       {
         path: '/assignment/:assignmentId',
-        name: 'course',
+        name: 'assignment',
         component: () => import('@/views/main/Assignment'),
       },
       {
