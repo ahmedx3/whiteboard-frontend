@@ -10,6 +10,7 @@
         <!-- inner container to constrain max width of hero section -->
         <v-container class="new-container">
           <v-row justify="center" class="mt-5 mb-3">
+            <!-- Header Image -->
             <v-col
               :class="{
                 'col-4': $vuetify.breakpoint.mdAndUp,
@@ -19,6 +20,7 @@
             >
               <v-img :src="image"></v-img>
             </v-col>
+            <!-- Header Text -->
             <v-col
               :class="{
                 'col-8': $vuetify.breakpoint.mdAndUp,
@@ -28,6 +30,7 @@
               class="white--text"
             >
               <v-row :justify="$vuetify.breakpoint.smAndDown ? 'center' : 'start'">
+                <!-- Assignment Name -->
                 <v-col cols="auto">
                   <h2
                     :class="{
@@ -40,6 +43,7 @@
                   </h2>
                 </v-col>
 
+                <!-- Assignment Attribution -->
                 <v-col cols="auto" class="align-bottom">
                   <div class="text-body font-weight-light mb-3">
                     Created By
@@ -49,6 +53,7 @@
                   </div>
                 </v-col>
               </v-row>
+              <!-- Course Difficulty -->
               <div
                 :class="{
                   'text-center': $vuetify.breakpoint.smAndDown,
@@ -58,6 +63,7 @@
                   {{ course.difficulty }}
                 </v-chip>
               </div>
+              <!-- Course Description -->
               <div
                 :class="{
                   'text-h4': $vuetify.breakpoint.smAndUp,
