@@ -153,12 +153,12 @@ export default {
     // @TODO replace with a call to a dedicated single course endpoint
     return this.fetchAllCourses()
       .then((courses) => {
-        // console.log(`[api] fetchSingleAssignment [courses]: ${courses}`);
+        // console.log(`[api] fetchSingleCourse [courses]: ${courses}`);
 
-        const matches = courses.data.filter((course) => course._id === idNum)[0];
-        // console.log(`[api] fetchSingleAssignment [matches]: ${matches}`);
+        const requestedCourse = courses.data.filter((course) => course._id === idNum)[0];
+        // console.log(`[api] fetchSingleCourse [matches]: ${matches}`);
 
-        return matches;
+        return requestedCourse;
       })
       .catch(() => false);
 
@@ -175,10 +175,6 @@ export default {
   },
 
   async fetchAllCourses() {
-    // return dummy course data
-    // return { data: courses };
-
-    // @TODO original
     const config = {
       headers: {
         Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
@@ -216,6 +212,50 @@ export default {
 
   // ************************ Assignments       ************************ //
 
+  async fetchAllAssignments() {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+      },
+    };
+    return axios
+      .get(`${baseURL}/api/v1/assignments`, config)
+      .then((response) => response.data)
+      .catch(() => false);
+  },
+
+  async fetchSingleAssignment(id) {
+    // convert the id to an int
+    // sometimes it's a string parsed from the url params
+    const idNum = parseInt(id, 10);
+    // console.log(`id is ${idNum} and of type ${typeof idNum}`);
+
+    // reuse the fetch all assignments method then filter for
+    // the assignment id specified
+    return this.fetchAllAssignments()
+      .then((assignments) => {
+        // console.log(`[api] fetchSingleAssignment [assignments]: ${JSON.stringify(assignments)}`);
+
+        const requestedAssignment = assignments.data
+          .filter((assignment) => assignment.id === idNum)[0];
+        // console.log(`[api] fetchSingleAssignment [matches]: ${requestedAssignment}`);
+
+        return requestedAssignment;
+      })
+      .catch(() => false);
+
+    // @TODO original
+    // const config = {
+    //   headers: {
+    //     Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+    //   },
+    // };
+    // return axios
+    //   .get(`${baseURL}/api/v1/courses/${id}`, config)
+    //   .then((response) => response.data.data)
+    //   .catch(() => false);
+  },
+
   async createAssignment(newAssignment) {
     const config = {
       headers: {
@@ -236,36 +276,6 @@ export default {
       .post(`${baseURL}/api/v1/assignments`, newAssignment, config)
       .then((response) => response.data)
       .catch(() => false);
-  },
-  async fetchSingleAssignment(id) {
-    // convert the id to an int
-    // sometimes it's string parsed from the url params
-    const idNum = parseInt(id, 10);
-    // console.log(`id is ${idNum} and of type ${typeof idNum}`);
-
-    // reuse the fetch all courses method then filter for
-    // the course id specified
-    return this.fetchAllCourses()
-      .then((courses) => {
-        console.log(`[api] fetchSingleAssignment [courses]: ${courses}`);
-
-        const matches = courses.filter((course) => course._id === idNum)[0];
-        console.log(`[api] fetchSingleAssignment [matches]: ${matches}`);
-
-        return matches;
-      })
-      .catch(() => false);
-
-    // @TODO original
-    // const config = {
-    //   headers: {
-    //     Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
-    //   },
-    // };
-    // return axios
-    //   .get(`${baseURL}/api/v1/courses/${id}`, config)
-    //   .then((response) => response.data.data)
-    //   .catch(() => false);
   },
 
   // ************************ Course Activities ************************ //
