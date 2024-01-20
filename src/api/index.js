@@ -16,6 +16,7 @@ axios.interceptors.request.use(
 
 // Define dummy user data for testing
 const USERDATA = {
+  id: 1,
   val: 'Test_Val',
   user: {
     type: 'admin',
@@ -274,6 +275,18 @@ export default {
 
     return axios
       .post(`${baseURL}/api/v1/assignments`, newAssignment, config)
+      .then((response) => response.data)
+      .catch(() => false);
+  },
+  async createAssignmentResponse(assignmentResponse) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+      },
+    };
+
+    return axios
+      .post(`${baseURL}/api/v1/response`, assignmentResponse, config)
       .then((response) => response.data)
       .catch(() => false);
   },

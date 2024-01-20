@@ -215,6 +215,33 @@ export default {
       }
       this.loading = false;
     },
+    async submitResponse() {
+
+      const USER = JSON.parse(localStorage.getItem('userData'));
+
+      let RESPONSE = {
+        assignmentID: this.assignment.id,
+        userID: USER.id,
+        activityID: null,
+        value: true
+      };
+
+      // post new assignment response to server
+      await api.createAssignmentResponse(RESPONSE).then((res) => {
+        if (res !== false) {
+          // notify the user of successful assignment submission
+          this.$store.state.snackbarMessage = 'Assignment submitted';
+          this.$store.state.snackbar = true;
+          this.$store.state.snackbarColor = 'success';
+        }
+        else {
+          // notify the user of unsuccessful assignment submission
+          this.$store.state.snackbarMessage = 'Unable to submit assignment';
+          this.$store.state.snackbar = true;
+          this.$store.state.snackbarColor = 'error';
+        }
+      }); 
+    },
   },
   async created() {
     await this.getAssignment(true)
