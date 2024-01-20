@@ -15,8 +15,8 @@
             <!-- activity card -->
             <v-card :color="colors[item.type]" dark>
               <!-- activity title -->
-              <v-card-title class="text-h3 center-horizontal py-3 px-4">
-                {{ item.title }}
+              <v-card-title class="text-h2 py-3 px-4">
+                {{ `${i+1}. ` + item.title }}
               </v-card-title>
               <!-- activity details -->
               <v-card-text class="white text--primary pa-4 center-horizontal">
