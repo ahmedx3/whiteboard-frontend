@@ -3,13 +3,14 @@
     <!--loader Until request finishes-->
     <Loading v-if="loading"></Loading>
 
-    <!--Single Course Page After Fetching Data-->
+    <!--Single Assignment Page After Fetching Data-->
     <template v-else>
       <!--Name and Intro section-->
       <v-container fluid class="IntroSection pt-0 pb-0">
         <!-- inner container to constrain max width of hero section -->
         <v-container class="new-container">
           <v-row justify="center" class="mt-5 mb-3">
+            <!-- Header Image -->
             <v-col
               :class="{
                 'col-4': $vuetify.breakpoint.mdAndUp,
@@ -19,6 +20,7 @@
             >
               <v-img :src="image"></v-img>
             </v-col>
+            <!-- Header Text -->
             <v-col
               :class="{
                 'col-8': $vuetify.breakpoint.mdAndUp,
@@ -28,6 +30,8 @@
               class="white--text"
             >
               <v-row :justify="$vuetify.breakpoint.smAndDown ? 'center' : 'start'">
+                
+                <!-- Assignment Name -->
                 <v-col cols="auto">
                   <h2
                     :class="{
@@ -36,20 +40,22 @@
                     }"
                     class="font-weight-medium mb-3 text-h1"
                   >
-                    {{ course.name }}
+                    {{ assignment.name }}
                   </h2>
                 </v-col>
-
+                <!-- Assignment Attribution -->
                 <v-col cols="auto" class="align-bottom">
-                  <div class="text-body font-weight-light mb-3">
-                    Created By
-                    <span class="text-body white--text font-weight-black mb-3">{{
-                      `${course.instructor.firstName} ${course.instructor.lastName}`
+                  <div class="text-h3 font-weight-light mb-3">
+                    Class
+                    <span class="text-h3 white--text font-weight-black mb-3">{{
+                      assignment.classID
                     }}</span>
                   </div>
                 </v-col>
               </v-row>
-              <div
+
+              <!-- Assignment Difficulty -->
+              <!-- <div
                 :class="{
                   'text-center': $vuetify.breakpoint.smAndDown,
                 }"
@@ -57,7 +63,8 @@
                 <v-chip class="px-5" text-color="white" color="deep-purple">
                   {{ course.difficulty }}
                 </v-chip>
-              </div>
+              </div> -->
+              <!-- Assignment Description -->
               <div
                 :class="{
                   'text-h4': $vuetify.breakpoint.smAndUp,
@@ -66,7 +73,7 @@
                 }"
                 class="font-weight-light mb-3 mt-6"
               >
-                {{ course.description }}
+                Due: {{ new Date(assignment.dueDate).toLocaleString() }}
               </div>
             </v-col>
           </v-row>
@@ -107,11 +114,13 @@
             Oops, It appears that there is no content yet.
           </div>
         </template>
+
         <!-- Course Threads (chat messages) Tab -->
         <template v-else-if="currentTab == 1">
           <div class="text-h1 text-center">Threads</div>
           <CourseThreads />
         </template>
+        
         <!-- Create Activity Tab -->
         <template v-else-if="currentTab == 2">
           <div class="text-h1 text-center">Create Activity</div>
@@ -155,24 +164,39 @@ export default {
     };
   },
   methods: {
-    initializeImage(assignmentId) {
-      if (parseInt(assignmentId, 10) % 3 === 0) {
+    initializeImage(courseId) {
+      if (parseInt(courseId, 10) % 3 === 0) {
         this.image = img1;
-      } else if (parseInt(assignmentId, 10) % 3 === 1) {
+      } else if (parseInt(courseId, 10) % 3 === 1) {
         this.image = img2;
       } else {
         this.image = img3;
       }
+    },
+    /**
+     * Retrieve assignment data for this page
+     * @param {boolean} load whether to show the loader component while awaiting the assignment data
+     */
+    async getAssignment(load = false) {
+      // this.currentTab = 0;
+      if (load) {
+        this.loading = true;
+      }
+      
+      const { assignmentId } = this.$route.params;
+      this.assignment = await api.fetchSingleAssignment(assignmentId);
+
+      this.loading = false;
     },
     async getCourse(load = false) {
       this.currentTab = 0;
       if (load) {
         this.loading = true;
       }
-      const { assignmentId } = this.$route.params;
-      this.course = await api.fetchSingleCourse(assignmentId);
 
-      // If user does not own course
+      this.course = await api.fetchSingleCourse(this.assignment.courseID);
+
+      // check if user owns course
       const user = JSON.parse(localStorage.getItem('userData'));
       if (user.id === this.course.instructor.id) {
         this.ownsCourse = true;
@@ -181,9 +205,10 @@ export default {
     },
   },
   async created() {
-    const { assignmentId } = this.$route.params;
-    this.initializeImage(assignmentId);
-    await this.getCourse();
+    await this.getAssignment(true)
+      .then(() => this.getCourse());
+
+    this.initializeImage(this.course._id);
   },
 
   beforeRouteEnter(to, from, next) {
