@@ -285,8 +285,28 @@ export default {
       },
     };
 
+    if (process.env.NODE_ENV === 'development') {
+      return true;
+    }
+
     return axios
       .post(`${baseURL}/api/v1/response`, assignmentResponse, config)
+      .then((response) => response.data)
+      .catch(() => false);
+  },
+  async deleteAssignmentResponse(assignmentResponseData) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+      },
+    };
+
+    if (process.env.NODE_ENV === 'development') {
+      return true;
+    }
+
+    return axios
+      .delete(`${baseURL}/api/v1/response`, assignmentResponseData, config)
       .then((response) => response.data)
       .catch(() => false);
   },

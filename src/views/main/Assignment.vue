@@ -87,12 +87,12 @@
             
             <!-- Submit Assignment Button -->
             <v-btn 
-            @click="submitResponse"
+            @click="submissionState === 'unsubmitted' ? submitResponse() : unsubmitResponse()"
             class="ma-0" 
             color="#b8860b"
             >
-              <v-icon left> mdi-plus </v-icon>
-              Mark as Complete
+              <v-icon left> {{submissionState === 'unsubmitted' ? 'mdi-check' : 'mdi-arrow-u-right-bottom'}} </v-icon>
+              {{submissionState === 'unsubmitted' ? 'Mark as Complete' : 'Unsubmit'}}
             </v-btn>
           </v-col>
         </v-row>
@@ -157,6 +157,12 @@ import img2 from '@/assets/course_2.svg';
 import img3 from '@/assets/course_3.svg';
 import api from '@/api';
 
+// export class SubmissionState {
+//   static unsubmitted = 'unsubmitted';
+//   static submitting = 'submitting';
+//   static submitted = 'submitted';
+// }
+
 export default {
   components: {
     Loading,
@@ -170,6 +176,7 @@ export default {
       loading: true,
       assignment: null,
       course: null,
+      submissionState: 'unsubmitted',
       image: null,
       currentTab: 0,
       ownsAssignment: false,
@@ -215,9 +222,14 @@ export default {
       }
       this.loading = false;
     },
+    /**
+     * Mark the assignment as completed
+     */
     async submitResponse() {
 
       const USER = JSON.parse(localStorage.getItem('userData'));
+      // set submission state
+      this.submissionState = 'submitting';
 
       let RESPONSE = {
         assignmentID: this.assignment.id,
@@ -228,19 +240,58 @@ export default {
 
       // post new assignment response to server
       await api.createAssignmentResponse(RESPONSE).then((res) => {
+
         if (res !== false) {
+          // set submission state
+          this.submissionState = 'submitted';
           // notify the user of successful assignment submission
           this.$store.state.snackbarMessage = 'Assignment submitted';
           this.$store.state.snackbar = true;
           this.$store.state.snackbarColor = 'success';
         }
         else {
+          // set submission state
+          this.submissionState = 'unsubmitted';
           // notify the user of unsuccessful assignment submission
           this.$store.state.snackbarMessage = 'Unable to submit assignment';
           this.$store.state.snackbar = true;
           this.$store.state.snackbarColor = 'error';
         }
       }); 
+    },
+    /**
+     * Mark the assignment as incomplete
+     */
+    async unsubmitResponse() {
+      const USER = JSON.parse(localStorage.getItem('userData'));
+      // set submission state
+      this.submissionState = 'submitting';
+
+      let REQUEST = {
+        assignmentID: this.assignment.id,
+        id: 1,
+      };
+
+      // post new assignment response to server
+      await api.deleteAssignmentResponse(REQUEST).then((res) => {
+
+        if (res !== false) {
+          // set submission state
+          this.submissionState = 'unsubmitted';
+          // notify the user of successful assignment submission
+          this.$store.state.snackbarMessage = 'Assignment unsubmitted';
+          this.$store.state.snackbar = true;
+          this.$store.state.snackbarColor = 'info';
+        }
+        else {
+          // set submission state
+          this.submissionState = 'submitted';
+          // notify the user of unsuccessful assignment submission
+          this.$store.state.snackbarMessage = 'Unable to unsubmit assignment';
+          this.$store.state.snackbar = true;
+          this.$store.state.snackbarColor = 'error';
+        }
+      });
     },
   },
   async created() {
