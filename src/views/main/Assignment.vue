@@ -80,11 +80,23 @@
         </v-container>
       </v-container>
 
-      <!-- Create Assignment Component -->
-      <AssignCourse 
-      v-if="course" 
-      :course="course">
-      </AssignCourse>
+      <!-- Toolbar -->
+      <v-container>
+        <v-row align="center" justify="end">
+          <v-col cols="auto">
+            
+            <!-- Submit Assignment Button -->
+            <v-btn 
+            @click="submitResponse"
+            class="ma-0" 
+            color="#b8860b"
+            >
+              <v-icon left> mdi-plus </v-icon>
+              Mark as Complete
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
 
       <!-- "Content", "Threads", and "Activity" Tabs -->
       <!-- <v-tabs
@@ -98,7 +110,7 @@
         hiding these tabs as they're not yet needed for courses,
         only instructor created assignments
         <v-tab key="1" v-if="false">Threads</v-tab>
-        <v-tab key="2" v-if="ownsCourse && false">Add Activity</v-tab>
+        <v-tab key="2" v-if="ownsAssignment && false">Add Activity</v-tab>
       </v-tabs> -->
 
       <!-- "Content" Tab Container -->
@@ -108,7 +120,7 @@
           <CourseContent
             @refetch="getCourse(false)"
             :activities="course.activities"
-            v-if="course.activities.length"
+            v-if="course && course.activities.length"
           />
           <div v-else class="text-overline my-6 text-center">
             Oops, It appears that there is no content yet.
@@ -160,7 +172,7 @@ export default {
       course: null,
       image: null,
       currentTab: 0,
-      ownsCourse: false,
+      ownsAssignment: false,
     };
   },
   methods: {
@@ -196,10 +208,10 @@ export default {
 
       this.course = await api.fetchSingleCourse(this.assignment.courseID);
 
-      // check if user owns course
+      // check if user owns assignment
       const user = JSON.parse(localStorage.getItem('userData'));
-      if (user.id === this.course.instructor.id) {
-        this.ownsCourse = true;
+      if (user.id === this.assignment.instructorID) {
+        this.ownsAssignment = true;
       }
       this.loading = false;
     },
@@ -210,7 +222,6 @@ export default {
 
     this.initializeImage(this.course._id);
   },
-
   beforeRouteEnter(to, from, next) {
     if (!localStorage.getItem('userData')) {
       next({ name: 'login' });
