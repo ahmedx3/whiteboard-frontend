@@ -156,6 +156,7 @@ import img1 from '@/assets/course_1.svg';
 import img2 from '@/assets/course_2.svg';
 import img3 from '@/assets/course_3.svg';
 import api from '@/api';
+import { defineComponent } from '@vue/runtime-dom';
 
 // export class SubmissionState {
 //   static unsubmitted = 'unsubmitted';
@@ -163,7 +164,7 @@ import api from '@/api';
 //   static submitted = 'submitted';
 // }
 
-export default {
+export default defineComponent({
   components: {
     Loading,
     CourseContent,
@@ -307,7 +308,7 @@ export default {
       next();
     }
   },
-};
+});
 </script>
 
 <style scoped>

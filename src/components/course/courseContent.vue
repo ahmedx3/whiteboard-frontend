@@ -165,8 +165,9 @@ import UnityWebgl from 'unity-webgl';
 // import UnityVue from 'unity-webgl/vue';
 import Loading from '@/components/Loading.vue';
 import api from '@/api';
+import { defineComponent } from '@vue/runtime-dom';
 
-export default {
+export default defineComponent({
   name: 'CourseContent',
   components: {
     Loading,
@@ -313,7 +314,7 @@ export default {
   destroyed() {
     this.unloadLab();
   },
-};
+});
 </script>
 
 <style scoped>
