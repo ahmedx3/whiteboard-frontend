@@ -1,3 +1,13 @@
 {
-  "include": ["./src/*"]
+  "compilerOptions": {
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    }
+  },
+  "include": ["./src/*"],
+  "vueCompilerOptions": {
+    "target": 2, 
+  }
 }
