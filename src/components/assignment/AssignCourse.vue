@@ -186,12 +186,12 @@ export default {
         newAssignmentFormatted.classID = this.classes.indexOf(newAssignmentFormatted.classID);
         // convert open date to UTC
         let openDate = new Date(newAssignmentFormatted.openDate);
-        newAssignmentFormatted.openDate = openDate.toISOString();
+        newAssignmentFormatted.openDate = new Date(openDate.toUTCString()).toISOString();
         // convert due date to UTC
         if (newAssignmentFormatted.dueDate !== "" &&
             newAssignmentFormatted.dueDate !== null) {
           let dueDate = new Date(newAssignmentFormatted.dueDate);
-          newAssignmentFormatted.dueDate = dueDate.toISOString();
+          newAssignmentFormatted.dueDate = Date(dueDate.toUTCString()).toISOString();
         } else {
           newAssignmentFormatted.dueDate = null;
         }
