@@ -1,7 +1,7 @@
 <template>
   <div class="single-course-container">
     <!--loader Until request finishes-->
-    <Loading v-if="loading"></Loading>
+    <Loading v-if="loading || !initialized"></Loading>
 
     <!--Single Assignment Page After Fetching Data-->
     <template v-else>
@@ -73,7 +73,7 @@
                 }"
                 class="font-weight-light mb-3 mt-6"
               >
-                Due: {{ new Date(assignment.dueDate).toLocaleString() }}
+                Due: {{ assignment.dueDate ? new Date(assignment.dueDate).toLocaleString() : 'No Due Date' }}
               </div>
             </v-col>
           </v-row>
@@ -87,12 +87,12 @@
             
             <!-- Submit Assignment Button -->
             <v-btn 
-            @click="submissionState === 'unsubmitted' ? submitResponse() : unsubmitResponse()"
+            @click="udpateAssignmentSubmissionState(!assignmentSubmission.submitted)"
             class="ma-0" 
             color="#b8860b"
             >
-              <v-icon left> {{submissionState === 'unsubmitted' ? 'mdi-check' : 'mdi-arrow-u-right-bottom'}} </v-icon>
-              {{submissionState === 'unsubmitted' ? 'Mark as Complete' : 'Unsubmit'}}
+              <v-icon left> {{!assignmentSubmission.submitted ? 'mdi-check' : 'mdi-arrow-u-right-bottom'}} </v-icon>
+              {{!assignmentSubmission.submitted ? 'Mark as Complete' : 'Unsubmit'}}
             </v-btn>
           </v-col>
         </v-row>
@@ -158,12 +158,6 @@ import img3 from '@/assets/course_3.svg';
 import api from '@/api';
 import { defineComponent } from '@vue/runtime-dom';
 
-// export class SubmissionState {
-//   static unsubmitted = 'unsubmitted';
-//   static submitting = 'submitting';
-//   static submitted = 'submitted';
-// }
-
 export default defineComponent({
   components: {
     Loading,
@@ -175,13 +169,19 @@ export default defineComponent({
   data() {
     return {
       loading: true,
+      user: null,
       assignment: null,
       course: null,
-      submissionState: 'unsubmitted',
+      assignmentSubmission: null,
       image: null,
       currentTab: 0,
       ownsAssignment: false,
     };
+  },
+  computed: {
+    initialized() {
+      return this.assignment && this.course && this.assignmentSubmission;
+    },
   },
   methods: {
     initializeImage(courseId) {
@@ -202,12 +202,16 @@ export default defineComponent({
       if (load) {
         this.loading = true;
       }
-      
+
       const { assignmentId } = this.$route.params;
       this.assignment = await api.fetchSingleAssignment(assignmentId);
 
       this.loading = false;
     },
+    /**
+     * Retrieve course data for this assignment
+     * @param {boolean} load whether to show the loader component while awaiting the course data
+     */
     async getCourse(load = false) {
       this.currentTab = 0;
       if (load) {
@@ -217,78 +221,65 @@ export default defineComponent({
       this.course = await api.fetchSingleCourse(this.assignment.courseID);
 
       // check if user owns assignment
-      const user = JSON.parse(localStorage.getItem('userData'));
-      if (user.id === this.assignment.instructorID) {
+      if (this.user.id === this.assignment.instructorID) {
         this.ownsAssignment = true;
       }
       this.loading = false;
     },
     /**
-     * Mark the assignment as completed
+     * Try and fetch an existing submission of this user
+     * for this assignment, creating one if none exists
      */
-    async submitResponse() {
-
-      const USER = JSON.parse(localStorage.getItem('userData'));
-      // set submission state
-      this.submissionState = 'submitting';
-
-      let RESPONSE = {
-        assignmentID: this.assignment.id,
-        userID: USER.id,
-        activityID: null,
-        value: true
-      };
-
-      // post new assignment response to server
-      await api.createAssignmentResponse(RESPONSE).then((res) => {
-
-        if (res !== false) {
-          // set submission state
-          this.submissionState = 'submitted';
-          // notify the user of successful assignment submission
-          this.$store.state.snackbarMessage = 'Assignment submitted';
-          this.$store.state.snackbar = true;
-          this.$store.state.snackbarColor = 'success';
-        }
-        else {
-          // set submission state
-          this.submissionState = 'unsubmitted';
-          // notify the user of unsuccessful assignment submission
-          this.$store.state.snackbarMessage = 'Unable to submit assignment';
-          this.$store.state.snackbar = true;
-          this.$store.state.snackbarColor = 'error';
-        }
-      }); 
+    async getAssignmentSubmission() {
+      // request assingment submission for current user
+      await api.fetchSingleAssignmentSubmission(this.assignment.id, this.user.id)
+        .then((res) => {
+          // check if server responded with a valid submission
+          if (res) {
+            // console.log('found existing submission');
+            return res;
+          }
+          // create new submission if none was found
+          else {
+            // console.log('no submission yet');
+            let newSubmissionDetails = {
+              assignmentID: this.assignment.id,
+              userID: this.user.id
+            }
+            return api.createAssignmentSubmission(newSubmissionDetails);
+          }
+        })
+        .then((submission) => {
+          // console.log('submission data: ', submission);
+          this.assignmentSubmission = submission;
+        });
     },
     /**
-     * Mark the assignment as incomplete
+     * Update the submission state of the assignment submission
+     * @param {boolean} submitted whether to mark the assignment complete or incomplete
      */
-    async unsubmitResponse() {
-      const USER = JSON.parse(localStorage.getItem('userData'));
-      // set submission state
-      this.submissionState = 'submitting';
+    async udpateAssignmentSubmissionState(submitted) {
 
-      let REQUEST = {
-        assignmentID: this.assignment.id,
-        id: 1,
+      let submissionEdits = {
+        id: this.assignmentSubmission.id,
+        submitted,
       };
 
-      // post new assignment response to server
-      await api.deleteAssignmentResponse(REQUEST).then((res) => {
+      // update assignment submission on server
+      await api.updateAssignmentSubmission(submissionEdits).then((res) => {
+
 
         if (res !== false) {
-          // set submission state
-          this.submissionState = 'unsubmitted';
-          // notify the user of successful assignment submission
-          this.$store.state.snackbarMessage = 'Assignment unsubmitted';
+          // update the local assignment submission with the server response
+          this.assignmentSubmission = res;
+          // notify the user of successful assignment update
+          this.$store.state.snackbarMessage = `Assignment ${submitted ? 'submitted' : 'unsubmitted'}`;
           this.$store.state.snackbar = true;
-          this.$store.state.snackbarColor = 'info';
+          this.$store.state.snackbarColor = submitted ? 'success' : 'info';
         }
         else {
-          // set submission state
-          this.submissionState = 'submitted';
-          // notify the user of unsuccessful assignment submission
-          this.$store.state.snackbarMessage = 'Unable to unsubmit assignment';
+          // notify the user of an unsuccessful assignment update
+          this.$store.state.snackbarMessage = `Unable to ${submitted ? 'submit' : 'unsubmit'} assignment`;
           this.$store.state.snackbar = true;
           this.$store.state.snackbarColor = 'error';
         }
@@ -296,8 +287,18 @@ export default defineComponent({
     },
   },
   async created() {
+
+    // get user info
+    this.user = JSON.parse(localStorage.getItem('userData'));
+
+    // fetch the assignment info,
+    // the related course,
+    // and any existing user submission
     await this.getAssignment(true)
-      .then(() => this.getCourse());
+      .then(() => this.getCourse())
+      .then(() => this.getAssignmentSubmission());
+
+    // console.log('Assignment Submission: \n' + JSON.stringify(this.assignmentSubmission));
 
     this.initializeImage(this.course._id);
   },

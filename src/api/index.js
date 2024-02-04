@@ -16,9 +16,9 @@ axios.interceptors.request.use(
 
 // Define dummy user data for testing
 const USERDATA = {
-  id: 1,
   val: 'Test_Val',
   user: {
+    id: 0,
     type: 'admin',
     test_user_val: 'hi',
   },
@@ -278,36 +278,45 @@ export default {
       .then((response) => response.data)
       .catch(() => false);
   },
-  async createAssignmentResponse(assignmentResponse) {
+
+  // ************************ Assignment Submissions ************************ //
+
+  async createAssignmentSubmission(assignmentSubmission) {
     const config = {
       headers: {
         Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
       },
     };
 
-    if (process.env.NODE_ENV === 'development') {
-      return true;
-    }
-
     return axios
-      .post(`${baseURL}/api/v1/response`, assignmentResponse, config)
-      .then((response) => response.data)
+      .post(`${baseURL}/api/v1/assignments/submissions`, assignmentSubmission, config)
+      .then((response) => response.data.data[0])
       .catch(() => false);
   },
-  async deleteAssignmentResponse(assignmentResponseData) {
+
+  async fetchSingleAssignmentSubmission(assignmentID, userID) {
     const config = {
       headers: {
         Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
       },
     };
 
-    if (process.env.NODE_ENV === 'development') {
-      return true;
-    }
+    return axios
+      .get(`${baseURL}/api/v1/assignments/${assignmentID}/submissions/?userID=${userID}`, config)
+      .then((response) => response.data.data[0])
+      .catch(() => false);
+  },
+
+  async updateAssignmentSubmission(submissionEdits) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken'))}`,
+      },
+    };
 
     return axios
-      .delete(`${baseURL}/api/v1/response`, assignmentResponseData, config)
-      .then((response) => response.data)
+      .patch(`${baseURL}/api/v1/assignments/submissions`, submissionEdits, config)
+      .then((response) => response.data.data[0])
       .catch(() => false);
   },
 
